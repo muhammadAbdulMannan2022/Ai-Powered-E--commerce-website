@@ -4,6 +4,7 @@ import Login from "../pages/login/Login";
 import Signup from "../pages/signup/Signup";
 import ForgotPassword from "../pages/ForgotPassword";
 import VerifyMail from "../pages/VerifyMail";
+import NewPassword from "../pages/NewPassword";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/verify-mail",
     element: <VerifyMail />,
+  },
+  {
+    path: "/new-password",
+    element: <NewPassword />,
   },
 ]);
 export default router;

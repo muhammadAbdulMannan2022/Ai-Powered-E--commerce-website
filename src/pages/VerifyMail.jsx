@@ -1,22 +1,34 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { IoArrowBack, IoShieldCheckmarkSharp } from "react-icons/io5";
 import { useLocation, useNavigate } from "react-router";
 
 export default function VerifyMail() {
   const [code, setCode] = useState(["", "", "", ""]);
+  const [timeLeft, setTimeLeft] = useState(60);
+  const [canResend, setCanResend] = useState(false);
+
   const inputRefs = useRef([]);
   const navigate = useNavigate();
   const location = useLocation();
 
+  useEffect(() => {
+    let timer;
+    if (timeLeft > 0) {
+      timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+    } else {
+      setCanResend(true);
+    }
+    return () => clearTimeout(timer);
+  }, [timeLeft]);
+
   const handleChange = (e, index) => {
-    const val = e.target.value.replace(/\D/, ""); // Allow only digits
+    const val = e.target.value.replace(/\D/, "");
     const newCode = [...code];
 
     if (val) {
       newCode[index] = val.charAt(0);
       setCode(newCode);
 
-      // Move to next input
       if (index < 3) {
         inputRefs.current[index + 1]?.focus();
       }
@@ -26,13 +38,10 @@ export default function VerifyMail() {
   const handleKeyDown = (e, index) => {
     if (e.key === "Backspace") {
       const newCode = [...code];
-
       if (code[index]) {
-        // Clear current box if not empty
         newCode[index] = "";
         setCode(newCode);
       } else if (index > 0) {
-        // Move to previous input and clear
         inputRefs.current[index - 1]?.focus();
         newCode[index - 1] = "";
         setCode(newCode);
@@ -60,12 +69,19 @@ export default function VerifyMail() {
     e.preventDefault();
     const fullCode = code.join("");
     console.log("Verification code submitted:", fullCode);
-    // You can add logic to verify the code here
+    navigate("/new-password");
+  };
+
+  const handleResend = () => {
+    console.log("Resending code...");
+    setTimeLeft(60);
+    setCanResend(false);
+    setCode(["", "", "", ""]);
+    inputRefs.current[0]?.focus();
   };
 
   return (
     <div className="w-full min-h-screen bg-[#f8fbed] flex items-center justify-center relative px-4 py-8">
-      {/* Back Button */}
       <button
         type="button"
         onClick={() => navigate("/login")}
@@ -74,12 +90,10 @@ export default function VerifyMail() {
         <IoArrowBack />
       </button>
 
-      {/* Form Container */}
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-xl bg-white/0 p-6 rounded-lg flex flex-col items-center"
       >
-        {/* Header */}
         <div className="flex flex-col items-center text-[#94B316] mb-6 text-center">
           <IoShieldCheckmarkSharp className="text-6xl md:text-8xl mb-2" />
           <h1 className="text-[#90A53A] text-2xl md:text-4xl font-bold mb-2">
@@ -88,12 +102,11 @@ export default function VerifyMail() {
           <p className="text-[#53640F] text-base md:text-lg">
             We’ve sent a verification code to{" "}
             <span className="font-semibold text-[#94B316]">
-              {location.state?.email}
+              {location.state?.email || "your email"}
             </span>
           </p>
         </div>
 
-        {/* Code Inputs */}
         <div
           className="w-full flex justify-between gap-3 mb-4"
           onPaste={handlePaste}
@@ -113,13 +126,30 @@ export default function VerifyMail() {
           ))}
         </div>
 
-        {/* Submit Button */}
         <button
           type="submit"
           className="w-full py-2 mt-2 bg-[#94B316] text-white font-semibold rounded-full hover:bg-[#94b316e7] transition"
         >
           Confirm
         </button>
+
+        {/* Countdown and Resend Info */}
+        <p className="text-[#53640F] text-sm text-center mt-4">
+          Didn’t receive an email? Please check your spam folder or{" "}
+          {canResend ? (
+            <button
+              type="button"
+              onClick={handleResend}
+              className="underline text-[#94B316] hover:text-[#6f8f0f] transition"
+            >
+              request another code
+            </button>
+          ) : (
+            <>
+              request another code in {timeLeft} second{timeLeft !== 1 && "s"}.
+            </>
+          )}
+        </p>
       </form>
     </div>
   );
