@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Input from "../../helpers/Input";
+import { Link } from "react-router";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -61,6 +62,11 @@ export default function Login() {
             value={formData.password}
             onChange={handleChange}
           />
+          <div className="w-full flex justify-end">
+            <Link className="text-[#94B316] underline" to={`/forgot-password`}>
+              Forgot password
+            </Link>
+          </div>
           <button
             type="submit"
             className="w-full py-2 bg-[#94B316] text-white font-semibold rounded-full hover:bg-[#94b316e7] transition"
