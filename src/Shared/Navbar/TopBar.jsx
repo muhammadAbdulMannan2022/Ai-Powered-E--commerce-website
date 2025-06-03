@@ -4,7 +4,7 @@ import { RiInstagramFill } from "react-icons/ri";
 
 export default function TopBar() {
   return (
-    <div className="bg-black text-white py-2 px-4 flex items-center justify-between w-full">
+    <div className="bg-black interFont text-white py-2 px-4 md:px-20 flex items-center justify-between w-full">
       {/* Left: Social Media Icons */}
       <div className="flex space-x-3">
         <a
