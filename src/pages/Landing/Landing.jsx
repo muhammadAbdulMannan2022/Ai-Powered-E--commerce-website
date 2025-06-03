@@ -2,6 +2,7 @@ import React from "react";
 import ReHero from "../../Shared/Hero/ReHero";
 import { FaEnvelope, FaShoppingCart } from "react-icons/fa";
 import WhyUs from "./Sections/WhyUs";
+import ProductsSlider from "./Sections/ProductsSlider";
 
 // backgroundImage = "/banner/1.png",
 //   title = "Premium Composite Fences",
@@ -33,6 +34,7 @@ export default function Landing() {
         secondaryButtonIcon={<FaEnvelope className="mr-2" />}
       />
       <WhyUs />
+      <ProductsSlider />
     </div>
   );
 }
