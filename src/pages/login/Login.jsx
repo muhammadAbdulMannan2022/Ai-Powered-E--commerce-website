@@ -36,7 +36,7 @@ export default function Login() {
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 py-10 items-center">
         {/* Logo */}
         <div className="flex justify-center mb-4">
-          <img src="/icons/formLogo.png" alt="Logo" className="h-20" />
+          <img src="/icons/formLogo.svg" alt="Logo" className="h-20" />
         </div>
 
         {/* Welcome Back */}

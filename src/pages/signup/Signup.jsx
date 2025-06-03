@@ -40,7 +40,7 @@ export default function Signup() {
         <div className="w-full max-w-md space-y-6">
           {/* Logo */}
           <div className="flex justify-center">
-            <img src="/icons/formLogo.png" alt="Logo" className="h-24" />
+            <img src="/icons/formLogo.svg" alt="Logo" className="h-24" />
           </div>
 
           {/* Title */}

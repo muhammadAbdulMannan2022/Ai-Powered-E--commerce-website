@@ -5,11 +5,18 @@ import Signup from "../pages/signup/Signup";
 import ForgotPassword from "../pages/ForgotPassword";
 import VerifyMail from "../pages/VerifyMail";
 import NewPassword from "../pages/NewPassword";
+import Landing from "../pages/Landing/Landing";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    children: [
+      {
+        path: "/",
+        element: <Landing />,
+      },
+    ],
   },
   {
     path: "/login",
