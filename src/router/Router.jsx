@@ -7,6 +7,7 @@ import VerifyMail from "../pages/VerifyMail";
 import NewPassword from "../pages/NewPassword";
 import Landing from "../pages/Landing/Landing";
 import About from "../pages/about/About";
+import Gallery from "../pages/gallery/Gallery";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: "/about",
         element: <About />,
+      },
+      {
+        path: "/gallery",
+        element: <Gallery />,
       },
     ],
   },
