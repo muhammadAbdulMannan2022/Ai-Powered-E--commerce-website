@@ -1,7 +1,12 @@
+/* Slider.css */
+
+/* Swiper container styling */
 .mySwiper {
-  padding: 20px 0;
+  position: relative;
+  padding: 20px 50px; /* Adjusted padding to accommodate navigation buttons */
 }
 
+/* Ensure slides stretch to content height and align properly */
 .swiper-slide {
   display: flex;
   justify-content: center;
@@ -9,22 +14,80 @@
   height: auto; /* Allow slides to stretch to content height */
 }
 
+/* Card styling with fixed height and width */
 .swiper-slide > div {
   width: 300px; /* Fixed width for all cards */
-  /* height: 450px; Fixed height for all cards */
+  height: 480px; /* Fixed height for all cards */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: hidden; /* Prevent content overflow */
 }
 
-/* Ensure images don't overflow */
+/* Image container styling */
 .swiper-slide img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* Optional: Style pagination bullets */
+/* Fixed height for image container */
+.interFont .relative {
+  height: 200px; /* Fixed height for image section */
+  flex-shrink: 0; /* Prevent image section from shrinking */
+}
+
+/* Ensure content section takes remaining space */
+.interFont .p-4 {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Distribute content within the section */
+}
+
+/* Ensure buttons section doesn't cause overflow */
+.interFont .mt-4 {
+  flex-shrink: 0; /* Prevent buttons from shrinking */
+}
+
+/* Style navigation buttons */
+.swiper-button-prev,
+.swiper-button-next {
+  color: #ffffff; /* White arrow color */
+  background-color: #15803d; /* Green background to match pagination active bullet */
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  z-index: 10;
+}
+
+/* Hover effect for navigation buttons */
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+  background-color: #166534; /* Slightly darker green on hover */
+}
+
+/* Position navigation buttons */
+.swiper-button-prev {
+  left: 10px; /* Position left button slightly outside */
+}
+
+.swiper-button-next {
+  right: 10px; /* Position right button slightly outside */
+}
+
+/* Customize arrow icons */
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  font-size: 18px; /* Adjust arrow size */
+  font-weight: bold;
+}
+
+/* Style pagination bullets */
 .swiper-pagination-bullet {
   background: #4b5563;
   opacity: 0.5;
@@ -33,4 +96,31 @@
 .swiper-pagination-bullet-active {
   background: #15803d;
   opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .swiper-slide > div {
+    width: 280px; /* Slightly smaller width for mobile */
+    height: 450px; /* Slightly smaller height for mobile */
+  }
+
+  .interFont .relative {
+    height: 180px; /* Smaller image height for mobile */
+  }
+
+  .swiper-button-prev,
+  .swiper-button-next {
+    width: 32px;
+    height: 32px;
+  }
+
+  .swiper-button-prev::after,
+  .swiper-button-next::after {
+    font-size: 14px;
+  }
+
+  .mySwiper {
+    padding: 20px 40px;
+  }
 }

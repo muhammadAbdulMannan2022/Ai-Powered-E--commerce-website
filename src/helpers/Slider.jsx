@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
-import "swiper/css/navigation";
+import "swiper/css/navigation"; // Ensure navigation CSS is included
 import { FaCircle } from "react-icons/fa";
-import { Pagination, Navigation } from "swiper/modules";
+import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import "./Slider.css";
 
 export default function Slider() {
@@ -80,21 +80,23 @@ export default function Slider() {
   return (
     <div className="w-full px-4 md:px-8 py-8 mx-auto">
       <Swiper
-        slidesPerView={1}
+        slidesPerView={3}
         spaceBetween={20}
         centeredSlides={true}
-        // pagination={{ clickable: true }}
         autoplay={{
-          delay: 2500,
+          delay: 2000,
           disableOnInteraction: true,
         }}
-        navigation
-        modules={[Navigation]}
+        navigation={{
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        }}
+        modules={[Navigation, Autoplay]}
         className="mySwiper"
         loop={true}
         breakpoints={{
           640: { slidesPerView: 1 },
-          768: { slidesPerView: 2, centeredSlides: true },
+          768: { slidesPerView: 3, centeredSlides: true },
           1024: { slidesPerView: 3, centeredSlides: true },
         }}
       >
@@ -103,10 +105,14 @@ export default function Slider() {
             <Card {...product} />
           </SwiperSlide>
         ))}
+        {/* Add navigation buttons */}
+        <div className="swiper-button-prev"></div>
+        <div className="swiper-button-next"></div>
       </Swiper>
     </div>
   );
 }
+
 const Card = ({
   image,
   title,

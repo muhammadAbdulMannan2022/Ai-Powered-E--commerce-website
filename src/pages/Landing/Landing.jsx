@@ -3,6 +3,7 @@ import ReHero from "../../Shared/Hero/ReHero";
 import { FaEnvelope, FaShoppingCart } from "react-icons/fa";
 import WhyUs from "./Sections/WhyUs";
 import ProductsSlider from "./Sections/ProductsSlider";
+import DesignIdea from "./Sections/DesignIdea";
 
 // backgroundImage = "/banner/1.png",
 //   title = "Premium Composite Fences",
@@ -35,6 +36,7 @@ export default function Landing() {
       />
       <WhyUs />
       <ProductsSlider />
+      <DesignIdea />
     </div>
   );
 }
