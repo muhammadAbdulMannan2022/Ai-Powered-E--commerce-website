@@ -3,6 +3,7 @@ import ReHero from "../../Shared/Hero/ReHero";
 import { FaEnvelope, FaShoppingCart } from "react-icons/fa";
 import { MdOutlineSupportAgent } from "react-icons/md";
 import CostExp from "./CostExp";
+import Mission from "./Mission";
 
 export default function About() {
   return (
@@ -36,6 +37,7 @@ export default function About() {
         </div>
       </div>
       <CostExp />
+      <Mission />
     </div>
   );
 }
