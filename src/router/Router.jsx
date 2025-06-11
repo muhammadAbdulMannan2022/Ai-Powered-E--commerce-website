@@ -6,6 +6,7 @@ import ForgotPassword from "../pages/ForgotPassword";
 import VerifyMail from "../pages/VerifyMail";
 import NewPassword from "../pages/NewPassword";
 import Landing from "../pages/Landing/Landing";
+import About from "../pages/about/About";
 
 const router = createBrowserRouter([
   {
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Landing />,
+      },
+      {
+        path: "/about",
+        element: <About />,
       },
     ],
   },

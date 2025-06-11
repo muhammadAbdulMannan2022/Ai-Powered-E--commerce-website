@@ -3,15 +3,15 @@ import { FaShoppingCart, FaEnvelope } from "react-icons/fa";
 
 const ReHero = ({
   backgroundImage = "/banner/1.png",
-  title = "Premium Composite Fences",
-  subtitle = "Delivered to Your Door",
-  description = "Enjoy the perfect balance of beauty, durability, and low maintenance with our composite decking solutions. Crafted to withstand the harshest weather while maintaining a rich composite decking solution.",
-  primaryButtonText = "Shop Now",
-  secondaryButtonText = "Order Free Sample",
+  title = "",
+  subtitle = "",
+  description = "",
+  primaryButtonText = "",
+  secondaryButtonText = "",
   primaryButtonAction = () => {},
   secondaryButtonAction = () => {},
-  primaryButtonIcon = <FaShoppingCart className="mr-2" />,
-  secondaryButtonIcon = <FaEnvelope className="mr-2" />,
+  primaryButtonIcon = "",
+  secondaryButtonIcon = "",
 }) => {
   return (
     <div

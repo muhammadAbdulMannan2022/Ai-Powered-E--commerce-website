@@ -9,7 +9,7 @@ export default function Footer() {
         {/* Company Info */}
         <div>
           <div className="flex items-center mb-4">
-            <img src="/logoW.png" alt="Logo" className="h-10 w-auto" />
+            <img src="/logoW.png" alt="Logo" className="h-20 w-auto" />
           </div>
           <p className="text-sm mb-4">
             Lorem ipsum dolor sit amet consectetur. Nibh sollicitudin habitasse
