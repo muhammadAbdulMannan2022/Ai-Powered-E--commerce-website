@@ -25,10 +25,48 @@ export default function DesignIdea() {
         </div>
       </div>
       <div className="w-full flex flex-col items-center justify-center overflow-hidden">
-        <div className="w-7xl">
-          <VideoPlayer />
+        <div className="w-full max-w-7xl px-4">
+          {/* Video Section */}
+          <div className="mb-4">
+            <VideoPlayer
+              videoSrc="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
+              autoPlay={true}
+              loop={true}
+              muted={true}
+              threshold={0.6}
+              poster="https://place.abh.ai/s3fs-public/2022-03/DSC_0128.JPG"
+              className="max-w-4xl mx-auto"
+              controlsClassName="bg-opacity-80"
+            />
+          </div>
+
+          {/* Images Section */}
+          <div className="grid grid-cols-3 gap-2">
+            <div className="aspect-square overflow-hidden rounded-lg">
+              <img
+                src="/gl/gl1.png"
+                alt="Image 1"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="aspect-square overflow-hidden rounded-lg">
+              <img
+                src="/gl/gl2.png"
+                alt="Image 2"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="aspect-square overflow-hidden rounded-lg">
+              <img
+                src="/gl/gl3.png"
+                alt="Image 3"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
         </div>
-        <Button label="View Gallery" className="mt-8" />
+
+        <Button label="View Gallery" className="mt-6" />
       </div>
     </div>
   );
