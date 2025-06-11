@@ -8,6 +8,7 @@ import NewPassword from "../pages/NewPassword";
 import Landing from "../pages/Landing/Landing";
 import About from "../pages/about/About";
 import Gallery from "../pages/gallery/Gallery";
+import ContactUs from "../pages/Contactus/ContactUs";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
       {
         path: "/gallery",
         element: <Gallery />,
+      },
+      {
+        path: "/contact",
+        element: <ContactUs />,
       },
     ],
   },
