@@ -79,9 +79,9 @@ const Navbar = () => {
                 </svg>
               </button>
               {isDropdownOpen && (
-                <div className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-md z-10">
+                <div className="absolute left-0 z-40 mt-2 w-48 bg-white shadow-lg rounded-md ">
                   <NavLink
-                    to="/products/multiple"
+                    to="/products/fencing_list"
                     className={({ isActive }) =>
                       `block px-4 py-2 hover:bg-[#94B316] hover:text-white ${
                         isActive ? "text-[#94B316]" : "text-[#3F4919]"
@@ -89,7 +89,18 @@ const Navbar = () => {
                     }
                     onClick={() => setIsDropdownOpen(false)}
                   >
-                    Multiple
+                    Fencing List
+                  </NavLink>
+                  <NavLink
+                    to="/products/free_samples"
+                    className={({ isActive }) =>
+                      `block px-4 py-2 hover:bg-[#94B316] hover:text-white ${
+                        isActive ? "text-[#94B316]" : "text-[#3F4919]"
+                      }`
+                    }
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
+                    Free Samples
                   </NavLink>
                 </div>
               )}

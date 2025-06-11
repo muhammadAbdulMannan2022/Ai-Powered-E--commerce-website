@@ -9,6 +9,8 @@ import Landing from "../pages/Landing/Landing";
 import About from "../pages/about/About";
 import Gallery from "../pages/gallery/Gallery";
 import ContactUs from "../pages/Contactus/ContactUs";
+import Products from "../pages/products/Products";
+import Fencing from "../pages/products/Fencing";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +32,19 @@ const router = createBrowserRouter([
       {
         path: "/contact",
         element: <ContactUs />,
+      },
+      {
+        path: "/products",
+        element: <Products />,
+        children: [
+          {
+            path: "fencing_list",
+            element: <Fencing />,
+          },
+          {
+            path: "free_samples",
+          },
+        ],
       },
     ],
   },

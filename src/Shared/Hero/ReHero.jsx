@@ -46,14 +46,16 @@ const ReHero = ({
             {primaryButtonIcon}
             {primaryButtonText}
           </button>
-          <button
-            onClick={secondaryButtonAction}
-            className="bg-transparent border-2 border-[#94B316] text-[#94B316] px-4 sm:px-6 py-2 rounded-full flex items-center justify-center hover:bg-[#94B316] hover:text-white hover:border-[#94B316] transition-colors duration-300 text-sm sm:text-base hover:cursor-pointer"
-            aria-label={secondaryButtonText}
-          >
-            {secondaryButtonIcon}
-            {secondaryButtonText}
-          </button>
+          {(secondaryButtonIcon || secondaryButtonText) && (
+            <button
+              onClick={secondaryButtonAction}
+              className="bg-transparent border-2 border-[#94B316] text-[#94B316] px-4 sm:px-6 py-2 rounded-full flex items-center justify-center hover:bg-[#94B316] hover:text-white hover:border-[#94B316] transition-colors duration-300 text-sm sm:text-base hover:cursor-pointer"
+              aria-label={secondaryButtonText}
+            >
+              {secondaryButtonIcon}
+              {secondaryButtonText}
+            </button>
+          )}
         </div>
       </div>
     </div>
