@@ -4,6 +4,7 @@ import { FaEnvelope, FaShoppingCart } from "react-icons/fa";
 import { MdOutlineSupportAgent } from "react-icons/md";
 import CostExp from "./CostExp";
 import Mission from "./Mission";
+import WhyUs from "./WhyUs";
 
 export default function About() {
   return (
@@ -38,6 +39,7 @@ export default function About() {
       </div>
       <CostExp />
       <Mission />
+      <WhyUs />
     </div>
   );
 }

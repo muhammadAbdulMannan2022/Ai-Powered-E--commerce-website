@@ -23,7 +23,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white shadow-md interFont">
-      <div className="mx-auto px-4 md:px-20 sm:px-6 lg:px-8">
+      <div className="mx-4 md:mx-16 px-4 md:px-20 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Left Section (Links on large screens, hidden on small) */}
           <div className="hidden md:flex space-x-8 items-center">
