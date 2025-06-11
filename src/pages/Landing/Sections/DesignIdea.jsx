@@ -5,7 +5,7 @@ import VideoPlayer from "../../../helpers/VideoPlayer";
 
 export default function DesignIdea() {
   return (
-    <div>
+    <div className="py-5">
       <div className="flex items-center justify-center w-full">
         <div className="flex flex-col items-center justify-center gap-4 py-10 max-w-6xl">
           <Title
@@ -35,7 +35,7 @@ export default function DesignIdea() {
               muted={true}
               threshold={0.6}
               poster="https://place.abh.ai/s3fs-public/2022-03/DSC_0128.JPG"
-              className="max-w-4xl mx-auto"
+              className=""
               controlsClassName="bg-opacity-80"
             />
           </div>

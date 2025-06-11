@@ -33,7 +33,7 @@
 
 /* Fixed height for image container */
 .interFont .relative {
-  height: 200px; /* Fixed height for image section */
+  /* height: 200px; Fixed height for image section */
   flex-shrink: 0; /* Prevent image section from shrinking */
 }
 
