@@ -15,7 +15,7 @@ const ReHero = ({
 }) => {
   return (
     <div
-      className="relative w-full h-[60vh] min-h-[400px] max-h-[600px] bg-cover bg-center interFont"
+      className="relative w-full h-[60vh] min-h-[400px] max-h-[600px] bg-cover bg-center interFont flex items-center justify-center"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       {/* Dark overlay */}

@@ -5,6 +5,8 @@ import WhyUs from "./Sections/WhyUs";
 import ProductsSlider from "./Sections/ProductsSlider";
 import DesignIdea from "./Sections/DesignIdea";
 import Faq from "./Sections/Faq";
+import CustomerReviewSlider from "./Sections/CustomerReviewSlider";
+import ContactSection from "./Sections/ContactUs";
 
 // backgroundImage = "/banner/1.png",
 //   title = "Premium Composite Fences",
@@ -39,6 +41,8 @@ export default function Landing() {
       <ProductsSlider />
       <DesignIdea />
       <Faq />
+      <CustomerReviewSlider />
+      <ContactSection />
     </div>
   );
 }
