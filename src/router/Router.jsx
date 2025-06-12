@@ -13,6 +13,7 @@ import Products from "../pages/products/Products";
 import Fencing from "../pages/products/Fencing";
 import ProductsByCategory from "../pages/products/ProductsByCategory";
 import FreeSamples from "../pages/FreeSamples/FreeSamples";
+import Policy from "../pages/policy/Policy";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: "/free_samples",
         element: <FreeSamples />,
+      },
+      {
+        path: "/policy",
+        element: <Policy />,
       },
     ],
   },

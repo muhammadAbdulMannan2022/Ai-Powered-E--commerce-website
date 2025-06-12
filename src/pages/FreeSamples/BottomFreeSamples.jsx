@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaChevronDown, FaChevronUp, FaFilePdf } from "react-icons/fa";
+import { Link } from "react-router";
 
 export default function BottomFreeSamples({ product }) {
   const [expandedSections, setExpandedSections] = useState({
@@ -94,13 +95,21 @@ export default function BottomFreeSamples({ product }) {
 
         {expandedSections.shipping && (
           <div className="mt-4 space-y-2">
-            <button className="text-blue-600 hover:text-blue-800 underline text-sm">
+            <Link
+              to="/policy"
+              state={{ policyType: "shipping" }}
+              className="text-blue-600 hover:text-blue-800 underline text-sm"
+            >
               Shipping Policy
-            </button>
+            </Link>
             <br />
-            <button className="text-blue-600 hover:text-blue-800 underline text-sm">
+            <Link
+              to="/policy"
+              state={{ policyType: "returns" }}
+              className="text-blue-600 hover:text-blue-800 underline text-sm"
+            >
               Returns Policy
-            </button>
+            </Link>
           </div>
         )}
       </div>
