@@ -92,7 +92,7 @@ const Navbar = () => {
                     Fencing List
                   </NavLink>
                   <NavLink
-                    to="/products/free_samples"
+                    to="/free_samples"
                     className={({ isActive }) =>
                       `block px-4 py-2 hover:bg-[#94B316] hover:text-white ${
                         isActive ? "text-[#94B316]" : "text-[#3F4919]"

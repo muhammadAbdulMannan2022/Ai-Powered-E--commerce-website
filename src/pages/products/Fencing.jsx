@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router"; // Update to react-router-dom
 import Card from "../../helpers/Card";
 import Button from "../../helpers/Button";
+import ProductsByCategory from "./ProductsByCategory";
 
 export default function Fencing() {
   const [ProductData] = useState([
@@ -97,7 +97,6 @@ export default function Fencing() {
       colors: ["#8B4513", "#5D4037", "#A0522D"],
       category: "Brulee Wood",
     },
-
     // Red Bordeaux (11–20)
     {
       id: 11,
@@ -189,7 +188,6 @@ export default function Fencing() {
       colors: ["#8B0000", "#FA8072", "#FFE4B5"],
       category: "Red Bordeaux",
     },
-
     // Caramel Wood (21–30)
     {
       id: 21,
@@ -243,7 +241,7 @@ export default function Fencing() {
       price: "$36.00",
       features: ["Top-tier materials", "UV proof"],
       colors: ["#D2B48C", "#BC8F8F", "#DEB887"],
-      category: "Caramel Wood",
+      category: " CARAMEL Wood",
     },
     {
       id: 27,
@@ -283,11 +281,14 @@ export default function Fencing() {
     },
   ]);
 
+  const location = useLocation();
+
   const [bruleeWood, setBruleeWood] = useState([]);
   const [redBordeaux, setRedBordeaux] = useState([]);
   const [caramelWood, setCaramelWood] = useState([]);
 
   useEffect(() => {
+    console.log(location.pathname);
     setBruleeWood(
       ProductData.filter((product) => product.category === "Brulee Wood").slice(
         0,
@@ -317,8 +318,11 @@ export default function Fencing() {
         ))}
       </div>
       <Link
-        to="/category"
-        state={{ category: title }}
+        to="/products/allProductByCategory"
+        state={{
+          category: title,
+          products: ProductData.filter((product) => product.category === title),
+        }}
         className="text-sm text-green-700 hover:underline mt-10"
       >
         <Button label="See All" />
@@ -327,10 +331,16 @@ export default function Fencing() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto py-10">
-      {renderSection("Brulee Wood", bruleeWood)}
-      {renderSection("Red Bordeaux", redBordeaux)}
-      {renderSection("Caramel Wood", caramelWood)}
-    </div>
+    <>
+      {location.pathname === "/products/fencing_list" ? (
+        <div className="max-w-7xl mx-auto py-10">
+          {renderSection("Brulee Wood", bruleeWood)}
+          {renderSection("Red Bordeaux", redBordeaux)}
+          {renderSection("Caramel Wood", caramelWood)}
+        </div>
+      ) : location.pathname === "/products/allProductByCategory" ? (
+        <ProductsByCategory products={ProductData} />
+      ) : null}
+    </>
   );
 }

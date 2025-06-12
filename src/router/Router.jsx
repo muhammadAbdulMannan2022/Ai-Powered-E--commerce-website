@@ -11,6 +11,8 @@ import Gallery from "../pages/gallery/Gallery";
 import ContactUs from "../pages/Contactus/ContactUs";
 import Products from "../pages/products/Products";
 import Fencing from "../pages/products/Fencing";
+import ProductsByCategory from "../pages/products/ProductsByCategory";
+import FreeSamples from "../pages/FreeSamples/FreeSamples";
 
 const router = createBrowserRouter([
   {
@@ -42,9 +44,14 @@ const router = createBrowserRouter([
             element: <Fencing />,
           },
           {
-            path: "free_samples",
+            path: "allProductByCategory",
+            element: <ProductsByCategory />,
           },
         ],
+      },
+      {
+        path: "/free_samples",
+        element: <FreeSamples />,
       },
     ],
   },
