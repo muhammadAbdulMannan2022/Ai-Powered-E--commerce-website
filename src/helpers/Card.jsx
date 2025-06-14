@@ -1,6 +1,8 @@
 import { FaCircle } from "react-icons/fa";
+import { Link } from "react-router";
 
 const Card = ({
+  id,
   image,
   title,
   price,
@@ -34,9 +36,13 @@ const Card = ({
           </div>
         </div>
         <div className="mt-4 flex flex-wrap gap-2">
-          <button className="bg-green-800 text-white px-4 py-1.5 rounded text-sm font-medium hover:bg-green-900 transition-colors w-full sm:w-auto">
+          <Link
+            to="/free_samples"
+            state={{ id }}
+            className="bg-green-800 text-white px-4 py-1.5 rounded text-sm font-medium hover:bg-green-900 transition-colors w-full sm:w-auto"
+          >
             Shop Now
-          </button>
+          </Link>
           <button className="border border-gray-300 px-4 py-1.5 rounded text-sm font-medium hover:bg-gray-100 transition-colors w-full sm:w-auto">
             Explore More
           </button>

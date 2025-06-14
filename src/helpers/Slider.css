@@ -1,13 +1,13 @@
 /* Slider.css */
 
 /* Swiper container styling */
-.mySwiper {
+.slider_styles .mySwiper {
   position: relative;
   padding: 20px 50px; /* Adjusted padding to accommodate navigation buttons */
 }
 
 /* Ensure slides stretch to content height and align properly */
-.swiper-slide {
+.slider_styles .swiper-slide {
   display: flex;
   justify-content: center;
   align-items: stretch;
@@ -15,7 +15,7 @@
 }
 
 /* Card styling with fixed height and width */
-.swiper-slide > div {
+.slider_styles .swiper-slide > div {
   width: 300px; /* Fixed width for all cards */
   height: 480px; /* Fixed height for all cards */
   display: flex;
@@ -25,20 +25,20 @@
 }
 
 /* Image container styling */
-.swiper-slide img {
+.slider_styles .swiper-slide img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
 /* Fixed height for image container */
-.interFont .relative {
+.slider_styles .interFont .relative {
   /* height: 200px; Fixed height for image section */
   flex-shrink: 0; /* Prevent image section from shrinking */
 }
 
 /* Ensure content section takes remaining space */
-.interFont .p-4 {
+.slider_styles .interFont .p-4 {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -46,7 +46,7 @@
 }
 
 /* Ensure buttons section doesn't cause overflow */
-.interFont .mt-4 {
+.slider_styles .interFont .mt-4 {
   flex-shrink: 0; /* Prevent buttons from shrinking */
 }
 
@@ -66,51 +66,51 @@
 }
 
 /* Hover effect for navigation buttons */
-.swiper-button-prev:hover,
-.swiper-button-next:hover {
+.slider_styles .swiper-button-prev:hover,
+.slider_styles .swiper-button-next:hover {
   background-color: #166534; /* Slightly darker green on hover */
 }
 
 /* Position navigation buttons */
-.swiper-button-prev {
+.slider_styles .swiper-button-prev {
   left: 10px; /* Position left button slightly outside */
 }
 
-.swiper-button-next {
+.slider_styles .swiper-button-next {
   right: 10px; /* Position right button slightly outside */
 }
 
 /* Customize arrow icons */
-.swiper-button-prev::after,
-.swiper-button-next::after {
+.slider_styles .swiper-button-prev::after,
+.slider_styles .swiper-button-next::after {
   font-size: 18px; /* Adjust arrow size */
   font-weight: bold;
 }
 
 /* Style pagination bullets */
-.swiper-pagination-bullet {
+.slider_styles .swiper-pagination-bullet {
   background: #4b5563;
   opacity: 0.5;
 }
 
-.swiper-pagination-bullet-active {
+.slider_styles .swiper-pagination-bullet-active {
   background: #15803d;
   opacity: 1;
 }
 
 /* Responsive adjustments */
 @media (max-width: 640px) {
-  .swiper-slide > div {
+  .slider_styles .swiper-slide > div {
     width: 280px; /* Slightly smaller width for mobile */
     height: 450px; /* Slightly smaller height for mobile */
   }
 
-  .interFont .relative {
+  .slider_styles .interFont .relative {
     height: 180px; /* Smaller image height for mobile */
   }
 
-  .swiper-button-prev,
-  .swiper-button-next {
+  .slider_styles .swiper-button-prev,
+  .slider_styles .swiper-button-next {
     width: 32px;
     height: 32px;
   }
@@ -120,7 +120,7 @@
     font-size: 14px;
   }
 
-  .mySwiper {
+  .slider_styles .mySwiper {
     padding: 20px 40px;
   }
 }

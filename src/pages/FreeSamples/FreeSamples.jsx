@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import TopFreeSamples from "./TopFreeSamples";
 import BottomFreeSamples from "./BottomFreeSamples";
 import Card from "../../helpers/Card";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import Button from "../../helpers/Button";
 
 export default function FreeSamples() {
+  const location = useLocation();
+  const id = location?.state?.id ?? 1;
+
+  // end of local
   const [recentView] = useState([
     // Brulee Wood (1–10)
     {
@@ -99,54 +103,147 @@ export default function FreeSamples() {
       category: "Brulee Wood",
     },
   ]);
-  const [product, setProduct] = useState({
-    id: 1,
-    images: ["/product/1.png", "/product/2.png", "/product/3.png"],
-    title: "Brulee Classic",
-    price: "$24.99",
-    features: ["15-Year warranty", "Smooth matte finish"],
-    colors: ["#A0522D", "#8B4513", "#CD853F"],
-    category: "Brulee Wood",
-    name: "Brulee-wood Grain Stock",
-    category: "Composite Decking",
-    colorOptions: [
-      { name: "Red Mahogany", hex: "#4A2C2A" },
-      { name: "Charcoal", hex: "#333333" },
-      { name: "Choice Pine Height", hex: "#8B5A2B" },
-    ],
-    dimensions: {
-      enterLinearFootage: 320,
-      quantity: 10,
-      unitPrice: "$500",
+  const [product, setProduct] = useState([
+    {
+      id: 1,
+      images: ["/product/1.png", "/product/2.png", "/product/3.png"],
+      title: "Brulee Classic",
+      price: "$24.99",
+      features: ["15-Year warranty", "Smooth matte finish"],
+      colors: ["#A0522D", "#8B4513", "#CD853F"],
+      category: "Brulee Wood",
+      name: "Brulee-wood Grain Stock",
+      category: "Composite Decking",
+      colorOptions: [
+        { name: "Red Mahogany", hex: "#4A2C2A" },
+        { name: "Charcoal", hex: "#333333" },
+        { name: "Choice Pine Height", hex: "#8B5A2B" },
+      ],
+      dimensions: {
+        enterLinearFootage: 320,
+        quantity: 10,
+        unitPrice: "$500",
+      },
+      totalPrice: "$5000",
+      description:
+        "Reimagine your property’s perimeter with our premium composite fence boards, engineered to blend sophisticated style and lasting performance. Available in four deep, rich hues, they preserve their natural, contemporary look season after season without fading. Crafted from 60 % recycled wood powder, 34 % plastic (including 10 % virgin plastic for strength), and 6 % high-performance additives, these fence boards offer outstanding resistance to impacts, UV rays and moisture. Maintenance is a breeze—no more sanding or staining: a simple wash with soapy water restores their original sheen and texture. Their non-slip, embossed surface and smooth, splinter-free edges ensure both comfortable handling during installation and safe enjoyment for everyone on your property. Designed to remain warp- and crack-free for over 20 years, our fence boards help upcycle wood and plastic waste, giving your outdoor living area a beautiful—and responsible—upgrade. Elevate your yard with a fence that combines elegance, durability and peace of mind.",
+      keyFeatures: [
+        "No warping, cracking or rotting",
+        "75-Year Limited Warranty",
+        "1-inch Thick Solid Decking Planks",
+        "Fade Resistant",
+        "Maximum width tolerance",
+      ],
+      shippingAndReturns: {
+        shippingPolicy: "Details available",
+        returnsPolicy: "Details available",
+      },
+      installationGuide: [
+        { file: "/path/to/guide1.pdf", fileName: "Installation Guide 1" },
+        { file: "/path/to/guide2.pdf", fileName: "Installation Guide 2" },
+        { file: "/path/to/guide3.pdf", fileName: "Installation Guide 3" },
+      ],
+      warranty: "Details available",
+      addToCart: true,
+      shareOptions: ["Shop", "Tweet"],
     },
-    totalPrice: "$5000",
-    description:
-      "Reimagine your property’s perimeter with our premium composite fence boards, engineered to blend sophisticated style and lasting performance. Available in four deep, rich hues, they preserve their natural, contemporary look season after season without fading. Crafted from 60 % recycled wood powder, 34 % plastic (including 10 % virgin plastic for strength), and 6 % high-performance additives, these fence boards offer outstanding resistance to impacts, UV rays and moisture. Maintenance is a breeze—no more sanding or staining: a simple wash with soapy water restores their original sheen and texture. Their non-slip, embossed surface and smooth, splinter-free edges ensure both comfortable handling during installation and safe enjoyment for everyone on your property. Designed to remain warp- and crack-free for over 20 years, our fence boards help upcycle wood and plastic waste, giving your outdoor living area a beautiful—and responsible—upgrade. Elevate your yard with a fence that combines elegance, durability and peace of mind.",
-    keyFeatures: [
-      "No warping, cracking or rotting",
-      "75-Year Limited Warranty",
-      "1-inch Thick Solid Decking Planks",
-      "Fade Resistant",
-      "Maximum width tolerance",
-    ],
-    shippingAndReturns: {
-      shippingPolicy: "Details available",
-      returnsPolicy: "Details available",
+    {
+      id: 2,
+      images: ["/product/1.png", "/product/2.png", "/product/3.png"],
+      title: "Brulee Classic",
+      price: "$24.99",
+      features: ["15-Year warranty", "Smooth matte finish"],
+      colors: ["#A0522D", "#8B4513", "#CD853F"],
+      category: "Brulee Wood",
+      name: "Brulee-wood Grain Stock",
+      category: "Composite Decking",
+      colorOptions: [
+        { name: "Red Mahogany", hex: "#4A2C2A" },
+        { name: "Charcoal", hex: "#333333" },
+        { name: "Choice Pine Height", hex: "#8B5A2B" },
+      ],
+      dimensions: {
+        enterLinearFootage: 320,
+        quantity: 10,
+        unitPrice: "$500",
+      },
+      totalPrice: "$5000",
+      description:
+        "Reimagine your property’s perimeter with our premium composite fence boards, engineered to blend sophisticated style and lasting performance. Available in four deep, rich hues, they preserve their natural, contemporary look season after season without fading. Crafted from 60 % recycled wood powder, 34 % plastic (including 10 % virgin plastic for strength), and 6 % high-performance additives, these fence boards offer outstanding resistance to impacts, UV rays and moisture. Maintenance is a breeze—no more sanding or staining: a simple wash with soapy water restores their original sheen and texture. Their non-slip, embossed surface and smooth, splinter-free edges ensure both comfortable handling during installation and safe enjoyment for everyone on your property. Designed to remain warp- and crack-free for over 20 years, our fence boards help upcycle wood and plastic waste, giving your outdoor living area a beautiful—and responsible—upgrade. Elevate your yard with a fence that combines elegance, durability and peace of mind.",
+      keyFeatures: [
+        "No warping, cracking or rotting",
+        "75-Year Limited Warranty",
+        "1-inch Thick Solid Decking Planks",
+        "Fade Resistant",
+        "Maximum width tolerance",
+      ],
+      shippingAndReturns: {
+        shippingPolicy: "Details available",
+        returnsPolicy: "Details available",
+      },
+      installationGuide: [
+        { file: "/path/to/guide1.pdf", fileName: "Installation Guide 1" },
+        { file: "/path/to/guide2.pdf", fileName: "Installation Guide 2" },
+        { file: "/path/to/guide3.pdf", fileName: "Installation Guide 3" },
+      ],
+      warranty: "Details available",
+      addToCart: true,
+      shareOptions: ["Shop", "Tweet"],
     },
-    installationGuide: [
-      { file: "/path/to/guide1.pdf", fileName: "Installation Guide 1" },
-      { file: "/path/to/guide2.pdf", fileName: "Installation Guide 2" },
-      { file: "/path/to/guide3.pdf", fileName: "Installation Guide 3" },
-    ],
-    warranty: "Details available",
-    addToCart: true,
-    shareOptions: ["Shop", "Tweet"],
-  });
+    {
+      id: 3,
+      images: ["/product/1.png", "/product/2.png", "/product/3.png"],
+      title: "Brulee Classic",
+      price: "$24.99",
+      features: ["15-Year warranty", "Smooth matte finish"],
+      colors: ["#A0522D", "#8B4513", "#CD853F"],
+      category: "Brulee Wood",
+      name: "Brulee-wood Grain Stock",
+      category: "Composite Decking",
+      colorOptions: [
+        { name: "Red Mahogany", hex: "#4A2C2A" },
+        { name: "Charcoal", hex: "#333333" },
+        { name: "Choice Pine Height", hex: "#8B5A2B" },
+      ],
+      dimensions: {
+        enterLinearFootage: 320,
+        quantity: 10,
+        unitPrice: "$500",
+      },
+      totalPrice: "$5000",
+      description:
+        "Reimagine your property’s perimeter with our premium composite fence boards, engineered to blend sophisticated style and lasting performance. Available in four deep, rich hues, they preserve their natural, contemporary look season after season without fading. Crafted from 60 % recycled wood powder, 34 % plastic (including 10 % virgin plastic for strength), and 6 % high-performance additives, these fence boards offer outstanding resistance to impacts, UV rays and moisture. Maintenance is a breeze—no more sanding or staining: a simple wash with soapy water restores their original sheen and texture. Their non-slip, embossed surface and smooth, splinter-free edges ensure both comfortable handling during installation and safe enjoyment for everyone on your property. Designed to remain warp- and crack-free for over 20 years, our fence boards help upcycle wood and plastic waste, giving your outdoor living area a beautiful—and responsible—upgrade. Elevate your yard with a fence that combines elegance, durability and peace of mind.",
+      keyFeatures: [
+        "No warping, cracking or rotting",
+        "75-Year Limited Warranty",
+        "1-inch Thick Solid Decking Planks",
+        "Fade Resistant",
+        "Maximum width tolerance",
+      ],
+      shippingAndReturns: {
+        shippingPolicy: "Details available",
+        returnsPolicy: "Details available",
+      },
+      installationGuide: [
+        { file: "/path/to/guide1.pdf", fileName: "Installation Guide 1" },
+        { file: "/path/to/guide2.pdf", fileName: "Installation Guide 2" },
+        { file: "/path/to/guide3.pdf", fileName: "Installation Guide 3" },
+      ],
+      warranty: "Details available",
+      addToCart: true,
+      shareOptions: ["Shop", "Tweet"],
+    },
+  ]);
+
+  // seclect product
+  const selectedProduct = id
+    ? product.find((p) => p.id === id) || product[0]
+    : product[0];
 
   return (
     <div>
-      <TopFreeSamples product={product} />
-      <BottomFreeSamples product={product} />
+      <TopFreeSamples product={selectedProduct} />
+      <BottomFreeSamples product={selectedProduct} />
 
       <div>
         <div className="mb-10 px-4 flex flex-col items-center justify-center">

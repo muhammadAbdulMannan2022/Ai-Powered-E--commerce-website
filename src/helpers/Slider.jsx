@@ -78,7 +78,7 @@ export default function Slider() {
   ]);
 
   return (
-    <div className="w-full px-4 md:px-8 py-8 mx-auto">
+    <div className="w-full px-4 md:px-8 py-8 mx-auto slider_styles">
       <Swiper
         slidesPerView={3}
         spaceBetween={20}
