@@ -9,7 +9,7 @@ import { FaPlus, FaMinus, FaTrash, FaChevronUp } from "react-icons/fa";
 import { FaTicket } from "react-icons/fa6";
 import { useState } from "react";
 
-export default function CartPage() {
+export default function CartPage({ currentStep, setCurrentStep }) {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.cart);
 
@@ -43,7 +43,6 @@ export default function CartPage() {
   );
 
   return (
-    // Added max-w-7xl and responsive horizontal padding with mx-auto to center content on extra large screens
     <div className="mx-auto px-4 sm:px-6 lg:px-40 w-full py-10 flex flex-col md:flex-row gap-8">
       {/* Cart Items Section */}
       <div className="flex-1">
@@ -256,7 +255,10 @@ export default function CartPage() {
             </button>
           </div>
         </div>
-        <button className="w-full bg-[#9EB24B] text-white p-3 rounded-full font-semibold border border-[#9EB24B] hover:cursor-pointer">
+        <button
+          className="w-full bg-[#9EB24B] text-white p-3 rounded-full font-semibold border border-[#9EB24B] hover:cursor-pointer"
+          onClick={() => setCurrentStep(2)}
+        >
           Checkout
         </button>
       </div>

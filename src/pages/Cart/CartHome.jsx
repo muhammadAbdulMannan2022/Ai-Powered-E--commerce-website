@@ -34,7 +34,9 @@ export default function CartHome() {
   const renderComponent = () => {
     switch (currentStep) {
       case 1:
-        return <CartPage />;
+        return (
+          <CartPage currentStep={currentStep} setCurrentStep={setCurrentStep} />
+        );
       case 2:
         return <StepTwo />;
       case 3:

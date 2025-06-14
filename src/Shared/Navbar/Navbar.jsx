@@ -6,7 +6,7 @@ import {
   FaShoppingCart,
   FaUser,
 } from "react-icons/fa";
-import { NavLink } from "react-router"; // Corrected import from react-router-dom
+import { Link, NavLink } from "react-router"; // Corrected import from react-router-dom
 import logo from "/icons/logo.svg"; // Updated logo path as provided
 
 const Navbar = () => {
@@ -230,12 +230,12 @@ const Navbar = () => {
               </NavLink>
 
               {/* Products Dropdown in Sidebar */}
-              <div>
+              <div className="relative">
                 <button
                   onClick={toggleDropdown}
                   className={`hover:text-[#94B316] ${
                     isDropdownOpen ? "text-[#94B316]" : "text-[#3F4919]"
-                  } flex items-center`}
+                  } focus:outline-none flex items-center`}
                 >
                   Products
                   <svg
@@ -256,19 +256,28 @@ const Navbar = () => {
                   </svg>
                 </button>
                 {isDropdownOpen && (
-                  <div className="ml-4 mt-2">
+                  <div className="absolute left-0 z-40 mt-2 w-48 bg-white shadow-lg rounded-md ">
                     <NavLink
-                      to="/products/multiple"
+                      to="/products/fencing_list"
                       className={({ isActive }) =>
-                        `block hover:text-[#94B316] ${
-                          isActive
-                            ? "text-[#94B316] font-bold"
-                            : "text-[#3F4919]"
+                        `block px-4 py-2 hover:bg-[#94B316] hover:text-white ${
+                          isActive ? "text-[#94B316]" : "text-[#3F4919]"
                         }`
                       }
-                      onClick={toggleMenu}
+                      onClick={() => setIsDropdownOpen(false)}
                     >
-                      Multiple
+                      Fencing List
+                    </NavLink>
+                    <NavLink
+                      to="/free_samples"
+                      className={({ isActive }) =>
+                        `block px-4 py-2 hover:bg-[#94B316] hover:text-white ${
+                          isActive ? "text-[#94B316]" : "text-[#3F4919]"
+                        }`
+                      }
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      Free Samples
                     </NavLink>
                   </div>
                 )}
@@ -299,10 +308,12 @@ const Navbar = () => {
             </div>
           </div>
           <div className="flex justify-between px-10 items-center space-x-4 mt-8 py-4 border-t border-[#3F4919]">
-            <FaShoppingCart
-              className="text-[#94B316] cursor-pointer" // Always active color
-              size={30}
-            />
+            <Link to="/cart">
+              <FaShoppingCart
+                className="text-[#94B316] cursor-pointer" // Always active color
+                size={30}
+              />
+            </Link>
             <div className="h-6 w-[1px] bg-[#3F4919]" />{" "}
             {/* Vertical divider */}
             <FaUser
