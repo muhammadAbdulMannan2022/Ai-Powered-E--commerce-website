@@ -147,10 +147,12 @@ const Navbar = () => {
               />
               <FaSearch className="absolute right-3 top-2 text-[#3F4919]" />
             </div>
-            <FaShoppingCart
-              className="text-[#94B316] cursor-pointer" // Always active color
-              size={20}
-            />
+            <Link to="/cart">
+              <FaShoppingCart
+                className="text-[#94B316] cursor-pointer" // Always active color
+                size={20}
+              />
+            </Link>
             <FaUser
               className="text-[#94B316] cursor-pointer" // Always active color
               size={20}
