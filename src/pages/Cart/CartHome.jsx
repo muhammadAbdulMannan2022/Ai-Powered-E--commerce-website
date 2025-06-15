@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import CartPage from "./Cart";
 import Checkout from "./Checkout";
+import CompleteOrder from "./CompleteOrder";
 
 function StepThree() {
   return <div>Step 3: Order Complete</div>;
@@ -37,7 +38,7 @@ export default function CartHome() {
       case 2:
         return <Checkout setCurrentStep={setCurrentStep} />;
       case 3:
-        return <StepThree />;
+        return <CompleteOrder />;
       default:
         return null;
     }
