@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TopFreeSamples from "./TopFreeSamples";
 import BottomFreeSamples from "./BottomFreeSamples";
 import Card from "../../helpers/Card";
@@ -252,10 +252,12 @@ export default function FreeSamples() {
               Recent View
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center w-full">
-            {[...recentView].slice(0, 3).map((product) => (
-              <Card key={product.id} {...product} />
-            ))}
+          <div className="w-full flex items-center justify-center ">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center w-full  max-w-7xl">
+              {[...recentView].slice(0, 3).map((product) => (
+                <Card key={product.id} {...product} />
+              ))}
+            </div>
           </div>
           <Link
             to="/products/allProductByCategory"

@@ -1,24 +1,39 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-const Input = ({ label, id, type = "text", placeholder, value, onChange }) => {
+const Input = ({
+  label,
+  id,
+  type = "text",
+  placeholder,
+  value,
+  onChange,
+  disabled,
+}) => {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === "password";
-  const inputType = isPassword && showPassword ? "text" : type;
+
+  const getInputType = () => {
+    if (!isPassword) return type;
+    return showPassword ? "text" : "password";
+  };
 
   return (
-    <div className="flex flex-col">
-      <label htmlFor={id} className="text-sm font-medium text-[#60701E] mb-1">
-        {label}
-      </label>
+    <div className="flex flex-col w-full">
+      {label && (
+        <label htmlFor={id} className="text-sm font-medium text-[#60701E] mb-1">
+          {label}
+        </label>
+      )}
       <div className="relative w-full">
         <input
-          type={inputType}
+          type={getInputType()}
           id={id}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className={`p-2 pr-10 bg-[#E8EECE] border border-[#E0EDAD] rounded-md w-full focus:outline-none text-[#A8A8A8]`}
+          disabled={disabled}
+          className={`p-2 pr-10 bg-[#E8EECE] border border-[#E0EDAD] rounded-md w-full focus:outline-none text-[#333] placeholder:text-[#A8A8A8]`}
         />
         {isPassword && (
           <button

@@ -153,10 +153,12 @@ const Navbar = () => {
                 size={20}
               />
             </Link>
-            <FaUser
-              className="text-[#94B316] cursor-pointer" // Always active color
-              size={20}
-            />
+            <Link to="/profile">
+              <FaUser
+                className="text-[#94B316] cursor-pointer" // Always active color
+                size={20}
+              />
+            </Link>
           </div>
 
           {/* Hamburger and Search for small screens */}

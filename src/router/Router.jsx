@@ -16,6 +16,7 @@ import FreeSamples from "../pages/FreeSamples/FreeSamples";
 import Policy from "../pages/policy/Policy";
 import Cart from "../pages/Cart/Cart";
 import CartHome from "../pages/Cart/CartHome";
+import Profile from "../pages/Profile/Profile";
 
 const router = createBrowserRouter([
   {
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
         element: <CartHome />,
       },
     ],
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
   },
   {
     path: "/login",

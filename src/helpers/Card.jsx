@@ -43,9 +43,12 @@ const Card = ({
           >
             Shop Now
           </Link>
-          <button className="border border-gray-300 px-4 py-1.5 rounded text-sm font-medium hover:bg-gray-100 transition-colors w-full sm:w-auto">
+          <Link
+            to={`/products/fencing_list`}
+            className="border border-gray-300 px-4 py-1.5 rounded text-sm font-medium hover:bg-gray-100 transition-colors w-full sm:w-auto"
+          >
             Explore More
-          </button>
+          </Link>
         </div>
       </div>
     </div>
