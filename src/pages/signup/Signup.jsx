@@ -1,9 +1,13 @@
 import React, { useState } from "react";
-import { useSignupMutation } from "../../redux/features/auth/AuthSlice";
+import {
+  useSignupMutation,
+  useSocialSignupSigninMutation,
+} from "../../redux/features/auth/AuthSlice";
 import Input from "../../helpers/Input";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { setProfile } from "../../redux/Profile/ProfileSlice";
+import { loginWithGoogle } from "../../functions/GoogleLogin";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -15,6 +19,8 @@ export default function Signup() {
     confirmPassword: "",
   });
   const [formError, setFormError] = useState("");
+  const [socialSigninSignup, { isError, isLoading: isSocialLoading }] =
+    useSocialSignupSigninMutation();
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -25,7 +31,27 @@ export default function Signup() {
     }));
     setFormError("");
   };
+  const socialSignin = async () => {
+    try {
+      const userInfo = await loginWithGoogle();
+      const authInfo = await socialSigninSignup(userInfo);
+      console.log(authInfo);
+      if (!isSocialLoading) {
+        console.log(authInfo);
+        // Store tokens & profile
+        localStorage.setItem("access_token", authInfo.data.access);
+        localStorage.setItem("refresh_token", authInfo.data.refresh);
+        localStorage.setItem("user_email", authInfo.data.profile_data?.user);
 
+        dispatch(setProfile(authInfo.profile_data));
+      }
+
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.log(error);
+      setFormError(error.message || "Social login failed.");
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { fullName, email, password, confirmPassword } = formData;
@@ -140,6 +166,7 @@ export default function Signup() {
           </div>
 
           <button
+            onClick={() => socialSignin()}
             type="button"
             className="flex items-center justify-center w-full py-2 border border-[#94B316] rounded-full hover:bg-[#eaf1cc] transition gap-3 hover:cursor-pointer"
           >

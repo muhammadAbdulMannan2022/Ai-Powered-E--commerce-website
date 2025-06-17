@@ -23,6 +23,13 @@ export const authApi = createApi({
         body: userData,
       }),
     }),
+    socialSignupSignin: builder.mutation({
+      query: (signupData) => ({
+        url: "/auth/social_signup_signin/",
+        method: "POST",
+        body: signupData,
+      }),
+    }),
     forgotPassword: builder.mutation({
       query: (email) => ({
         url: "/auth/forgot-password/",
@@ -50,6 +57,7 @@ export const authApi = createApi({
 export const {
   useLoginMutation,
   useSignupMutation,
+  useSocialSignupSigninMutation,
   useForgotPasswordMutation,
   useVerifyOtpMutation,
   useResetPasswordMutation,

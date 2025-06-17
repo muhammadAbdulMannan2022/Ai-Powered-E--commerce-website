@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import Input from "../../helpers/Input";
 import { Link, useLocation, useNavigate } from "react-router";
-import { useLoginMutation } from "../../redux/features/auth/AuthSlice";
+import {
+  useLoginMutation,
+  useSocialSignupSigninMutation,
+} from "../../redux/features/auth/AuthSlice";
 import { useDispatch } from "react-redux";
 import { setProfile } from "../../redux/Profile/ProfileSlice";
+import { loginWithGoogle } from "../../functions/GoogleLogin";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -11,11 +15,12 @@ export default function Login() {
   const redirectPath = location.state?.from || "/";
   const [login, { isLoading }] = useLoginMutation();
   const dispatch = useDispatch();
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [socialSigninSignup, { isError, isLoading: isSocialLoading }] =
+    useSocialSignupSigninMutation();
 
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -27,7 +32,27 @@ export default function Login() {
     }));
     setErrorMsg("");
   };
+  const socialSignin = async () => {
+    try {
+      const userInfo = await loginWithGoogle();
+      const authInfo = await socialSigninSignup(userInfo);
+      console.log(authInfo);
+      if (!isSocialLoading) {
+        console.log(authInfo);
+        // Store tokens & profile
+        localStorage.setItem("access_token", authInfo.data.access);
+        localStorage.setItem("refresh_token", authInfo.data.refresh);
+        localStorage.setItem("user_email", authInfo.data.profile_data?.user);
 
+        dispatch(setProfile(authInfo.profile_data));
+      }
+
+      navigate(redirectPath, { replace: true });
+    } catch (error) {
+      console.log(error);
+      setErrorMsg(error.message || "Social login failed.");
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = formData;
@@ -39,7 +64,6 @@ export default function Login() {
 
     try {
       const res = await login({ email, password }).unwrap();
-
       // ✅ Store tokens and user email
       localStorage.setItem("access_token", res.access);
       localStorage.setItem("refresh_token", res.refresh);
@@ -123,7 +147,7 @@ export default function Login() {
 
         <button
           type="button"
-          onClick={() => console.log("Google login clicked")}
+          onClick={() => socialSignin()}
           className="flex items-center justify-center py-2 px-10 hover:cursor-pointer border border-[#94B316] rounded-full hover:bg-[#eaf1cc] transition gap-3"
         >
           <img src="/icons/google.png" alt="Google" className="w-5 h-5" />
