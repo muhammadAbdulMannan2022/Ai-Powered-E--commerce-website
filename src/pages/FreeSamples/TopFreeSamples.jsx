@@ -25,6 +25,7 @@ export default function TopFreeSamples({ product }) {
     product.dimensions.enterLinearFootage
   );
   const [quantity, setQuantity] = useState(product.dimensions.quantity);
+  const [fenceHeight, setFenceHeight] = useState("6"); // Default height in feet
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,6 +34,16 @@ export default function TopFreeSamples({ product }) {
     product.dimensions.unitPrice.replace("$", "")
   );
   const totalPrice = quantity * unitPriceNumber;
+
+  // Calculate materials based on linear footage (L)
+  const L = linearFootage;
+  const N = Math.ceil(L / 6); // Number of panels
+  const Boards = 12 * N; // Total boards
+  const Posts = N + 1; // Total posts
+  const BottomRails = N; // Total bottom rails
+  const TopRails = N; // Total top rails
+  const Stops = 2 * N; // Total fence-stop parts
+  const Caps = N + 1; // Total plastic post caps
 
   const handlePreviousImage = () => {
     setSelectedImageIndex((prev) =>
@@ -55,6 +66,10 @@ export default function TopFreeSamples({ product }) {
     setLinearFootage(value);
   };
 
+  const handleFenceHeightChange = (e) => {
+    setFenceHeight(e.target.value);
+  };
+
   const selected = product.colorOptions.find((c) => c.name === selectedColor);
 
   const handleAddToCart = () => {
@@ -67,6 +82,14 @@ export default function TopFreeSamples({ product }) {
       unitPrice: unitPriceNumber.toFixed(2),
       totalPrice: (quantity * unitPriceNumber).toFixed(2),
       image: product.images[0],
+      linearFootage: L,
+      fenceHeight,
+      boards: Boards,
+      posts: Posts,
+      bottomRails: BottomRails,
+      topRails: TopRails,
+      stops: Stops,
+      caps: Caps,
     };
 
     dispatch(addToCart(item));
@@ -199,6 +222,22 @@ export default function TopFreeSamples({ product }) {
             />
           </div>
 
+          {/* Fence Height */}
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Choose Fence Height <span className="text-gray-500">(Feet)</span>
+            </label>
+            <select
+              value={fenceHeight}
+              onChange={handleFenceHeightChange}
+              className="w-full p-3 border border-gray-300 rounded-lg"
+            >
+              <option value="6">6 ft</option>
+              <option value="8">8 ft</option>
+              <option value="10">10 ft</option>
+            </select>
+          </div>
+
           {/* Quantity */}
           <div>
             <label className="block text-sm font-medium mb-2">
@@ -225,6 +264,20 @@ export default function TopFreeSamples({ product }) {
               </div>
               <span>{product.dimensions.unitPrice}/each</span>
             </div>
+          </div>
+
+          {/* Material Breakdown */}
+          <div className="space-y-2">
+            <p>
+              <strong>Material Breakdown:</strong>
+            </p>
+            <p>Panels: {N}</p>
+            <p>Boards: {Boards}</p>
+            <p>Posts: {Posts}</p>
+            <p>Bottom Rails: {BottomRails}</p>
+            <p>Top Rails: {TopRails}</p>
+            <p>Stops: {Stops}</p>
+            <p>Caps: {Caps}</p>
           </div>
 
           {/* Total Price */}

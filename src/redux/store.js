@@ -1,21 +1,22 @@
 import { configureStore } from "@reduxjs/toolkit";
 import cartSlice from "./features/cart/cartSlice";
+import { authApi } from "./features/auth/AuthSlice";
 
 const store = configureStore({
   reducer: {
     cart: cartSlice,
+    [authApi.reducerPath]: authApi.reducer, // ✅ RTK Query reducer
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(authApi.middleware), // ✅ RTK Query middleware
 });
 
-// local setup
-// Subscribe to store changes and save cart to localStorage
+// localStorage still for cart or token if needed
 store.subscribe(() => {
   if (typeof window !== "undefined") {
     const state = store.getState();
     localStorage.setItem("cart", JSON.stringify(state.cart.cart));
   }
 });
-
-// end local continue
 
 export default store;

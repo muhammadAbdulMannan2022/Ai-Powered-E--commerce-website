@@ -1,5 +1,6 @@
 import React from "react";
 import { FaShoppingCart, FaEnvelope } from "react-icons/fa";
+import { Link } from "react-router";
 
 const ReHero = ({
   backgroundImage = "/banner/1.png",
@@ -38,14 +39,15 @@ const ReHero = ({
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-          <button
+          <Link
+            to={`/products/fencing_list`}
             onClick={primaryButtonAction}
             className="bg-[#94B316] text-white px-4 sm:px-6 py-2 rounded-full flex items-center justify-center hover:bg-[#94b316f1] transition-colors duration-300 text-sm sm:text-base hover:cursor-pointer"
             aria-label={primaryButtonText}
           >
             {primaryButtonIcon}
             {primaryButtonText}
-          </button>
+          </Link>
           {(secondaryButtonIcon || secondaryButtonText) && (
             <button
               onClick={secondaryButtonAction}
