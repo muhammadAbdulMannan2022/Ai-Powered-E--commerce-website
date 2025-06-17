@@ -30,6 +30,7 @@ export const authApi = createApi({
         body: signupData,
       }),
     }),
+    // TODO: rest of not implimented
     forgotPassword: builder.mutation({
       query: (email) => ({
         url: "/auth/forgot-password/",
@@ -39,16 +40,37 @@ export const authApi = createApi({
     }),
     verifyOtp: builder.mutation({
       query: (otpData) => ({
-        url: "/auth/login/",
+        url: "/auth/verify_otp/",
         method: "POST",
         body: otpData,
       }),
     }),
+    reSendOtp: builder.mutation({
+      query: (userEmail) => ({
+        url: "/auth/resend_otp/",
+        method: "POST",
+        body: userEmail,
+      }),
+    }),
     resetPassword: builder.mutation({
       query: (newData) => ({
-        url: "/reset-password",
+        url: "/auth/reset-password",
         method: "POST",
         body: newData,
+      }),
+    }),
+    changeEmail: builder.mutation({
+      query: (newMail) => ({
+        url: "/auth/email-change-request/",
+        method: "POST",
+        body: newMail,
+      }),
+    }),
+    verifyChangeEmail: builder.mutation({
+      query: (verifyData) => ({
+        url: "/auth/verify-email-change/",
+        method: "POST",
+        body: verifyData,
       }),
     }),
   }),
@@ -60,5 +82,9 @@ export const {
   useSocialSignupSigninMutation,
   useForgotPasswordMutation,
   useVerifyOtpMutation,
+  useReSendOtpMutation,
   useResetPasswordMutation,
+  //
+  useChangeEmailMutation,
+  useVerifyChangeEmailMutation,
 } = authApi;

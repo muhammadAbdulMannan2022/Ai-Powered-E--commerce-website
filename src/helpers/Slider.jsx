@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -7,77 +7,17 @@ import { FaCircle } from "react-icons/fa";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import "./Slider.css";
 import Card from "./Card";
+import { useGetProductsQuery } from "../redux/features/Products/ProductsSlice";
 
 export default function Slider() {
-  const [ProductData] = useState([
-    {
-      id: 1,
-      image: "/product/1.png",
-      title: "Red Bordeaux-wood Grain",
-      price: "$29.99",
-      features: [
-        "20-Year limited residential warranty",
-        "Linear grain pattern with mineral streaking",
-      ],
-      colors: ["#8B4513", "#A0522D", "#CD853F", "#D2691E", "#E9967A"],
-    },
-    {
-      id: 2,
-      image: "/product/2.png",
-      title: "Oak Natural-wood Grain",
-      price: "$34.99",
-      features: [
-        "25-Year limited residential warranty",
-        "Classic oak pattern with natural finish",
-      ],
-      colors: ["#DEB887", "#D2B48C", "#BC8F8F", "#F5DEB3", "#FFE4B5"],
-    },
-    {
-      id: 3,
-      image: "/product/3.png",
-      title: "Walnut Dark-wood Grain",
-      price: "$39.99",
-      features: [
-        "30-Year limited residential warranty",
-        "Rich dark grain with smooth texture",
-      ],
-      colors: ["#654321", "#5D4037", "#8B4513", "#A0522D", "#CD853F"],
-    },
-    {
-      id: 4,
-      image: "/product/1.png",
-      title: "Red Bordeaux-wood Grain",
-      price: "$29.99",
-      features: [
-        "20-Year limited residential warranty",
-        "Linear grain pattern with mineral streaking",
-      ],
-      colors: ["#8B4513", "#A0522D", "#CD853F", "#D2691E", "#E9967A"],
-    },
-    {
-      id: 5,
-      image: "/product/2.png",
-      title: "Oak Natural-wood Grain",
-      price: "$34.99",
-      features: [
-        "25-Year limited residential warranty",
-        "Classic oak pattern with natural finish",
-      ],
-      colors: ["#DEB887", "#D2B48C", "#BC8F8F", "#F5DEB3", "#FFE4B5"],
-    },
-    {
-      id: 6,
-      image: "/product/3.png",
-      title: "Walnut Dark-wood Grain",
-      price: "$39.99",
-      features: [
-        "30-Year limited residential warranty",
-        "Rich dark grain with smooth texture",
-      ],
-      colors: ["#654321", "#5D4037", "#8B4513", "#A0522D", "#CD853F"],
-    },
-  ]);
-
+  const [ProductData, setProductsData] = useState([]);
+  const { data, isLoading, isError } = useGetProductsQuery();
+  useEffect(() => {
+    if (!isLoading) {
+      setProductsData(data);
+    }
+    console.log(data, "data i have loaded");
+  }, [data]);
   return (
     <div className="w-full px-4 md:px-8 py-8 mx-auto slider_styles">
       <Swiper

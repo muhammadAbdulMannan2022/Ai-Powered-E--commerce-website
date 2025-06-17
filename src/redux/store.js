@@ -2,15 +2,19 @@ import { configureStore } from "@reduxjs/toolkit";
 import cartSlice from "./features/cart/cartSlice";
 import { authApi } from "./features/auth/AuthSlice";
 import profileSlice from "./Profile/ProfileSlice";
+import { productApi } from "./features/Products/ProductsSlice";
 
 const store = configureStore({
   reducer: {
     cart: cartSlice,
     [authApi.reducerPath]: authApi.reducer, // ✅ RTK Query reducer
     profile: profileSlice,
+    [productApi.reducerPath]: productApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware), // ✅ RTK Query middleware
+    getDefaultMiddleware()
+      .concat(authApi.middleware)
+      .concat(productApi.middleware),
 });
 
 // localStorage still for cart or token if needed
