@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useSignupMutation } from "../../redux/features/auth/AuthSlice";
 import Input from "../../helpers/Input";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { setProfile } from "../../redux/Profile/ProfileSlice";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -13,6 +15,7 @@ export default function Signup() {
     confirmPassword: "",
   });
   const [formError, setFormError] = useState("");
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -44,19 +47,22 @@ export default function Signup() {
         password,
       }).unwrap();
 
-      // ✅ Store tokens and email
       localStorage.setItem("access_token", res.access);
       localStorage.setItem("refresh_token", res.refresh);
       localStorage.setItem("user_email", res.profile_data.user);
 
-      // ✅ Navigate to verify page with location state
+      dispatch(setProfile(res.profile_data));
+
       navigate("/verify-mail", {
         state: { from: "signup" },
       });
     } catch (err) {
-      console.error("Signup failed:", err);
+      const backendError =
+        err?.data?.message || "Signup failed. Please try again later.";
+      setFormError(backendError);
     }
   };
+
   return (
     <div className="min-h-screen bg-[#f8fbed] flex flex-col lg:flex-row">
       <div className="w-full lg:w-1/2 h-64 lg:h-screen">
