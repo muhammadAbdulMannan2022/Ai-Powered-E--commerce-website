@@ -13,7 +13,10 @@ export const productApi = createApi({
     getProducts: builder.query({
       query: () => "api/wood-categories/",
     }),
+    getProduct: builder.query({
+      query: (slag) => `api/woodtypes/${slag}/`,
+    }),
   }),
 });
 
-export const { useGetProductsQuery } = productApi;
+export const { useGetProductsQuery, useGetProductQuery } = productApi;

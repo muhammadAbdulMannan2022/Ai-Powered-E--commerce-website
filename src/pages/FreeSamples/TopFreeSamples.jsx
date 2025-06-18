@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import {
@@ -16,45 +16,94 @@ import Button from "../../helpers/Button";
 import { addToCart } from "../../redux/features/cart/cartSlice";
 
 export default function TopFreeSamples({ product }) {
+  // Map colorOptions from color_images
+  const colorOptions = product.color_images?.length
+    ? product.color_images.map((item) => ({
+        name: item.color_option.name,
+        hex: item.color_option.hex_code,
+      }))
+    : [{ name: "Default", hex: "#000000" }];
+
+  // All images for thumbnails
+  const allImages = product.color_images?.length
+    ? product.color_images.map((item) => ({
+        url: item.image_url,
+        colorName: item.color_option.name,
+      }))
+    : [{ url: "/placeholder.svg?height=400&width=400", colorName: "Default" }];
+
+  // Initialize state
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [open, setOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState(
-    product.colorOptions[0]?.name || ""
+    colorOptions[0]?.name || ""
   );
-  const [linearFootage, setLinearFootage] = useState(
-    product.dimensions.enterLinearFootage
-  );
-  const [quantity, setQuantity] = useState(product.dimensions.quantity);
-  const [fenceHeight, setFenceHeight] = useState("6"); // Default height in feet
+  const [linearFootage, setLinearFootage] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const [fenceHeight, setFenceHeight] = useState("6");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const unitPriceNumber = Number.parseFloat(
-    product.dimensions.unitPrice.replace("$", "")
-  );
+  // Parse unit price with fallback
+  const unitPriceNumber = Number.parseFloat(product.actual_price) || 0;
   const totalPrice = quantity * unitPriceNumber;
 
-  // Calculate materials based on linear footage (L)
-  const L = linearFootage;
-  const N = Math.ceil(L / 6); // Number of panels
-  const Boards = 12 * N; // Total boards
-  const Posts = N + 1; // Total posts
-  const BottomRails = N; // Total bottom rails
-  const TopRails = N; // Total top rails
-  const Stops = 2 * N; // Total fence-stop parts
-  const Caps = N + 1; // Total plastic post caps
+  // Filter images for the slider based on selected color
+  const sliderImages = product.color_images?.length
+    ? product.color_images
+        .filter((item) => item.color_option.name === selectedColor)
+        .map((item) => item.image_url)
+    : ["/placeholder.svg?height=400&width=400"];
 
+  // Find the index of the current color's image in allImages for highlighting
+  const currentImageIndex = allImages.findIndex(
+    (img) =>
+      img.url === sliderImages[selectedImageIndex] &&
+      img.colorName === selectedColor
+  );
+
+  // Ensure initial image and index are valid
+  useEffect(() => {
+    // Verify selectedColor exists in colorOptions
+    const validColor =
+      colorOptions.find((c) => c.name === selectedColor)?.name ||
+      colorOptions[0]?.name;
+    if (validColor !== selectedColor) {
+      setSelectedColor(validColor);
+    }
+    // Ensure selectedImageIndex is within bounds
+    if (sliderImages.length > 0 && selectedImageIndex >= sliderImages.length) {
+      setSelectedImageIndex(0);
+    }
+  }, [selectedColor, sliderImages, colorOptions]);
+
+  // Navigation handlers
   const handlePreviousImage = () => {
     setSelectedImageIndex((prev) =>
-      prev === 0 ? product.images.length - 1 : prev - 1
+      sliderImages.length > 0
+        ? prev === 0
+          ? sliderImages.length - 1
+          : prev - 1
+        : 0
     );
   };
 
   const handleNextImage = () => {
     setSelectedImageIndex((prev) =>
-      prev === product.images.length - 1 ? 0 : prev + 1
+      sliderImages.length > 0
+        ? prev === sliderImages.length - 1
+          ? 0
+          : prev + 1
+        : 0
     );
+  };
+
+  const handleThumbnailClick = (index) => {
+    const clickedImage = allImages[index];
+    setSelectedColor(clickedImage.colorName);
+    const newIndex = sliderImages.findIndex((img) => img === clickedImage.url);
+    setSelectedImageIndex(newIndex >= 0 ? newIndex : 0);
   };
 
   const handleQuantityChange = (change) => {
@@ -62,7 +111,7 @@ export default function TopFreeSamples({ product }) {
   };
 
   const handleLinearFootageChange = (e) => {
-    const value = Number.parseInt(e.target.value) || 0;
+    const value = Number.parseInt(e.target.value);
     setLinearFootage(value);
   };
 
@@ -70,31 +119,48 @@ export default function TopFreeSamples({ product }) {
     setFenceHeight(e.target.value);
   };
 
-  const selected = product.colorOptions.find((c) => c.name === selectedColor);
+  const selected =
+    colorOptions.find((c) => c.name === selectedColor) || colorOptions[0];
 
   const handleAddToCart = () => {
-    const item = {
-      productId: product.id,
-      name: product.name,
-      selectedColor,
-      colorHex: selected?.hex,
-      quantity,
-      unitPrice: unitPriceNumber.toFixed(2),
-      totalPrice: (quantity * unitPriceNumber).toFixed(2),
-      image: product.images[0],
-      linearFootage: L,
-      fenceHeight,
-      boards: Boards,
-      posts: Posts,
-      bottomRails: BottomRails,
-      topRails: TopRails,
-      stops: Stops,
-      caps: Caps,
-    };
+    if (!linearFootage) {
+      alert("Enter Linear Footage ");
+    } else {
+      const item = {
+        productId: product.id,
+        name: product.name,
+        selectedColor,
+        colorHex: selected?.hex || "#000000",
+        quantity,
+        unitPrice: unitPriceNumber.toFixed(2),
+        totalPrice: (quantity * unitPriceNumber).toFixed(2),
+        image:
+          sliderImages[selectedImageIndex] ||
+          "/placeholder.svg?height=400&width=400",
+        linearFootage: L,
+        fenceHeight,
+        boards: Boards,
+        posts: Posts,
+        bottomRails: BottomRails,
+        topRails: TopRails,
+        stops: Stops,
+        caps: Caps,
+      };
 
-    dispatch(addToCart(item));
-    navigate("/cart");
+      dispatch(addToCart(item));
+      navigate("/cart");
+    }
   };
+
+  // Calculate materials based on linear footage (L)
+  const L = Number.isFinite(linearFootage) ? Math.max(1, linearFootage) : 1;
+  const N = Math.ceil(L / 6);
+  const Boards = 12 * N;
+  const Posts = N + 1;
+  const BottomRails = N;
+  const TopRails = N;
+  const Stops = 2 * N;
+  const Caps = N + 1;
 
   return (
     <div className="max-w-7xl mx-auto p-6 text-[#3F4919]">
@@ -104,41 +170,47 @@ export default function TopFreeSamples({ product }) {
           <div className="relative bg-gray-100 rounded-lg overflow-hidden aspect-square">
             <img
               src={
-                product.images[selectedImageIndex] ||
+                sliderImages[selectedImageIndex] ||
                 "/placeholder.svg?height=400&width=400"
               }
               alt={`${product.name} - ${selectedColor}`}
               className="w-full h-full object-cover"
             />
-            <button
+            {/* <button
               onClick={handlePreviousImage}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-[#94B3165E] hover:bg-[#94b31677] text-white p-2 rounded-full transition-colors"
+              className={`absolute left-4 top-1/2 transform -translate-y-1/2 bg-[#94B3165E] hover:bg-[#94b31677] text-white p-2 rounded-full transition-colors ${
+                sliderImages.length <= 1 ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              disabled={sliderImages.length <= 1}
             >
               <FaChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={handleNextImage}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-[#94B3165E] hover:bg-[#94b31677] text-white p-2 rounded-full transition-colors"
+              className={`absolute right-4 top-1/2 transform -translate-y-1/2 bg-[#94B3165E] hover:bg-[#94b31677] text-white p-2 rounded-full transition-colors ${
+                sliderImages.length <= 1 ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              disabled={sliderImages.length <= 1}
             >
               <FaChevronRight className="w-4 h-4" />
-            </button>
+            </button> */}
           </div>
 
           {/* Thumbnails */}
           <div className="grid grid-cols-3 gap-2">
-            {product.images.map((image, index) => (
+            {allImages.map((image, index) => (
               <button
                 key={index}
-                onClick={() => setSelectedImageIndex(index)}
-                className={`h-[60%] rounded-lg overflow-hidden border-2 transition-colors ${
-                  selectedImageIndex === index
+                onClick={() => handleThumbnailClick(index)}
+                className={`h-[60%] hover:cursor-pointer rounded-lg overflow-hidden border-2 transition-colors ${
+                  index === currentImageIndex
                     ? "border-green-500"
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
                 <img
-                  src={image || "/placeholder.svg?height=150&width=150"}
-                  alt={`${product.name} view ${index + 1}`}
+                  src={image.url || "/placeholder.svg?height=150&width=150"}
+                  alt={`${product.name} - ${image.colorName}`}
                   className="w-full h-full object-cover"
                 />
               </button>
@@ -165,7 +237,7 @@ export default function TopFreeSamples({ product }) {
               <div className="flex items-center space-x-2">
                 <span
                   className="w-8 h-8 rounded-md border border-gray-300"
-                  style={{ backgroundColor: selected?.hex }}
+                  style={{ backgroundColor: selected?.hex || "#000000" }}
                 />
                 <span className="text-sm font-medium">
                   {selected?.name || "Select color"}
@@ -188,7 +260,7 @@ export default function TopFreeSamples({ product }) {
 
             {open && (
               <div className="absolute z-10 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg">
-                {product.colorOptions.map((color) => (
+                {colorOptions.map((color) => (
                   <button
                     key={color.name}
                     onClick={() => {
@@ -218,7 +290,7 @@ export default function TopFreeSamples({ product }) {
               value={linearFootage}
               onChange={handleLinearFootageChange}
               className="w-full p-3 border border-gray-300 rounded-lg"
-              min="1"
+              // min="1"
             />
           </div>
 
@@ -262,7 +334,7 @@ export default function TopFreeSamples({ product }) {
                   <FaPlus />
                 </button>
               </div>
-              <span>{product.dimensions.unitPrice}/each</span>
+              <span>${unitPriceNumber.toFixed(2)}/each</span>
             </div>
           </div>
 
@@ -288,16 +360,12 @@ export default function TopFreeSamples({ product }) {
 
             {/* Buttons */}
             <div className="flex space-x-4 mb-6">
-              {product.shareOptions.includes("Shop") && (
-                <Button label="Shop Now" />
-              )}
-              {product.addToCart && (
-                <Button
-                  label="Add to Cart"
-                  variant="outline"
-                  onClick={handleAddToCart}
-                />
-              )}
+              <Button label="Shop Now" />
+              <Button
+                label="Add to Cart"
+                variant="outline"
+                onClick={handleAddToCart}
+              />
             </div>
 
             {/* Social Share */}
