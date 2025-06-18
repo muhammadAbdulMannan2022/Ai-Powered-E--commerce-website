@@ -47,7 +47,7 @@ export default function TopFreeSamples({ product }) {
 
   // Parse unit price with fallback
   const unitPriceNumber = Number.parseFloat(product.actual_price) || 0;
-  const totalPrice = quantity * unitPriceNumber;
+  const totalPrice = quantity * (unitPriceNumber * linearFootage);
 
   // Filter images for the slider based on selected color
   const sliderImages = product.color_images?.length
@@ -283,7 +283,10 @@ export default function TopFreeSamples({ product }) {
           {/* Linear Footage */}
           <div>
             <label className="block text-sm font-medium mb-2">
-              Enter Linear Footage <span className="text-gray-500">(Feet)</span>
+              Enter Linear Footage{" "}
+              <span className="text-gray-500">
+                (Feet) - Per Feet ${unitPriceNumber}
+              </span>
             </label>
             <input
               type="number"
@@ -334,7 +337,9 @@ export default function TopFreeSamples({ product }) {
                   <FaPlus />
                 </button>
               </div>
-              <span>${unitPriceNumber.toFixed(2)}/each</span>
+              <span>
+                ${unitPriceNumber.toFixed(2) * linearFootage || 0}/each
+              </span>
             </div>
           </div>
 
@@ -343,13 +348,13 @@ export default function TopFreeSamples({ product }) {
             <p>
               <strong>Material Breakdown:</strong>
             </p>
-            <p>Panels: {N}</p>
-            <p>Boards: {Boards}</p>
-            <p>Posts: {Posts}</p>
-            <p>Bottom Rails: {BottomRails}</p>
-            <p>Top Rails: {TopRails}</p>
-            <p>Stops: {Stops}</p>
-            <p>Caps: {Caps}</p>
+            <p>Panels: {N * quantity}</p>
+            <p>Boards: {Boards * quantity}</p>
+            <p>Posts: {Posts * quantity}</p>
+            <p>Bottom Rails: {BottomRails * quantity}</p>
+            <p>Top Rails: {TopRails * quantity}</p>
+            <p>Stops: {Stops * quantity}</p>
+            <p>Caps: {Caps * quantity}</p>
           </div>
 
           {/* Total Price */}
