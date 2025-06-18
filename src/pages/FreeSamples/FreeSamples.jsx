@@ -4,105 +4,14 @@ import BottomFreeSamples from "./BottomFreeSamples";
 import Card from "../../helpers/Card";
 import { Link, useLocation } from "react-router";
 import Button from "../../helpers/Button";
+import { useGetRecentQuery } from "../../redux/Profile/ProfileGetSlice";
 
 export default function FreeSamples() {
   const location = useLocation();
   const id = location?.state?.id ?? 1;
 
   // end of local
-  const [recentView] = useState([
-    // Brulee Wood (1–10)
-    {
-      id: 1,
-      image: "/product/1.png",
-      title: "Brulee Classic",
-      price: "$24.99",
-      features: ["15-Year warranty", "Smooth matte finish"],
-      colors: ["#A0522D", "#8B4513", "#CD853F"],
-      category: "Brulee Wood",
-    },
-    {
-      id: 2,
-      image: "/product/1.png",
-      title: "Brulee Natural",
-      price: "$26.99",
-      features: ["Eco-friendly materials", "Textured surface"],
-      colors: ["#DEB887", "#D2691E", "#FFE4B5"],
-      category: "Brulee Wood",
-    },
-    {
-      id: 3,
-      image: "/product/1.png",
-      title: "Brulee Deep Grain",
-      price: "$27.99",
-      features: ["Slip-resistant", "Deep grain texture"],
-      colors: ["#8B4513", "#5D4037", "#CD853F"],
-      category: "Brulee Wood",
-    },
-    {
-      id: 4,
-      image: "/product/1.png",
-      title: "Brulee Walnut Finish",
-      price: "$29.99",
-      features: ["20-Year limited warranty", "UV resistant"],
-      colors: ["#654321", "#D2691E", "#A0522D"],
-      category: "Brulee Wood",
-    },
-    {
-      id: 5,
-      image: "/product/1.png",
-      title: "Brulee Rich Oak",
-      price: "$31.99",
-      features: ["Premium build", "Smooth polish"],
-      colors: ["#F4A460", "#DAA520", "#BC8F8F"],
-      category: "Brulee Wood",
-    },
-    {
-      id: 6,
-      image: "/product/1.png",
-      title: "Brulee Rustic",
-      price: "$28.49",
-      features: ["Rustic appearance", "Water resistant"],
-      colors: ["#D2B48C", "#8B4513", "#DEB887"],
-      category: "Brulee Wood",
-    },
-    {
-      id: 7,
-      image: "/product/1.png",
-      title: "Brulee Maple Touch",
-      price: "$30.00",
-      features: ["Subtle grains", "Scratch resistant"],
-      colors: ["#FFEBCD", "#EEDC82", "#CDAA7D"],
-      category: "Brulee Wood",
-    },
-    {
-      id: 8,
-      image: "/product/1.png",
-      title: "Brulee Hazelnut",
-      price: "$27.50",
-      features: ["Rich color tone", "Durable material"],
-      colors: ["#A0522D", "#8B4513", "#BC8F8F"],
-      category: "Brulee Wood",
-    },
-    {
-      id: 9,
-      image: "/product/1.png",
-      title: "Brulee Premium",
-      price: "$33.49",
-      features: ["Premium finish", "Long lifespan"],
-      colors: ["#D2B48C", "#F5DEB3", "#CD853F"],
-      category: "Brulee Wood",
-    },
-    {
-      id: 10,
-      image: "/product/1.png",
-      title: "Brulee Mocha",
-      price: "$35.00",
-      features: ["Elegant design", "Textured surface"],
-      colors: ["#8B4513", "#5D4037", "#A0522D"],
-      category: "Brulee Wood",
-    },
-  ]);
+  const [recentView, setRecentView] = useState([]);
   const [product, setProduct] = useState([
     {
       id: 1,
@@ -234,43 +143,59 @@ export default function FreeSamples() {
       shareOptions: ["Shop", "Tweet"],
     },
   ]);
-
+  const token = localStorage.getItem("access_token");
+  const {
+    data: recentData,
+    isLoading: recientLoading,
+    isError,
+  } = useGetRecentQuery(undefined, {
+    skip: !token,
+  });
   // seclect product
   const selectedProduct = id
     ? product.find((p) => p.id === id) || product[0]
     : product[0];
-
+  useEffect(() => {
+    if (!recientLoading) setRecentView(recentData);
+    console.log(recentData, "lllllllllllllllllllllllllllllllllllllllll");
+    console.log(token);
+  }, [recentData, recientLoading]);
   return (
     <div>
       <TopFreeSamples product={selectedProduct} />
       <BottomFreeSamples product={selectedProduct} />
 
-      <div>
-        <div className="mb-10 px-4 flex flex-col items-center justify-center">
-          <div className="flex items-start mb-4">
-            <h2 className="text-4xl mb-4 font-semibold text-[#3F4919]">
-              Recent View
-            </h2>
-          </div>
-          <div className="w-full flex items-center justify-center ">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center w-full  max-w-7xl">
-              {[...recentView].slice(0, 3).map((product) => (
-                <Card key={product.id} {...product} />
-              ))}
+      {recentView && (
+        <div>
+          <div className="mb-10 px-4 flex flex-col items-center justify-center">
+            <div className="flex items-start mb-4">
+              <h2 className="text-4xl mb-4 font-semibold text-[#3F4919]">
+                Recent View
+              </h2>
             </div>
+            <div className="w-full flex items-center justify-center ">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center w-full  max-w-7xl">
+                {recentView &&
+                  [...recentView]
+                    .slice(0, 3)
+                    .map((product) => (
+                      <Card key={product.id} {...product.wood_type_details} />
+                    ))}
+              </div>
+            </div>
+            <Link
+              to="/products/allProductByCategory"
+              state={{
+                category: "Recent View",
+                products: recentView,
+              }}
+              className="text-sm text-green-700 hover:underline mt-10"
+            >
+              <Button label="See All" />
+            </Link>
           </div>
-          <Link
-            to="/products/allProductByCategory"
-            state={{
-              category: "Recent View",
-              products: recentView,
-            }}
-            className="text-sm text-green-700 hover:underline mt-10"
-          >
-            <Button label="See All" />
-          </Link>
         </div>
-      </div>
+      )}
     </div>
   );
 }

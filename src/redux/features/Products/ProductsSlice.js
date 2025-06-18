@@ -11,7 +11,7 @@ export const productApi = createApi({
   }),
   endpoints: (builder) => ({
     getProducts: builder.query({
-      query: () => "api/woodtypes/",
+      query: () => "api/wood-categories/",
     }),
   }),
 });

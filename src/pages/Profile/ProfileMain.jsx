@@ -1,17 +1,73 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Edit, Mail } from "lucide-react";
 import Input from "../../helpers/Input";
 import Select from "./Select";
+import {
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+  useChangeEmailMutation,
+  useEmailOtpVerifyMutation,
+} from "../../redux/Profile/ProfileGetSlice";
+import { setProfile } from "../../redux/Profile/ProfileSlice";
 
 export default function ProfilePage() {
+  const dispatch = useDispatch();
+  const profile = useSelector((state) => state.profile.profile);
+
+  const {
+    data: profileData,
+    isLoading: lodingProfileInfo,
+    isError: profileInfoErr,
+  } = useGetProfileQuery();
+  const [updateProfile] = useUpdateProfileMutation();
+  const [changeEmail, { isLoading: isSendingEmail, error: emailError }] =
+    useChangeEmailMutation();
+  const [verifyEmailOtp, { isLoading: isVerifyingOtp, error: otpError }] =
+    useEmailOtpVerifyMutation();
+
+  const fileInputRef = useRef(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
+
+  useEffect(() => {
+    if (profileData) {
+      dispatch(setProfile(profileData));
+    }
+  }, [profileData, dispatch]);
+
+  const [formData, setFormData] = useState({
+    fullName: "",
+    gender: "",
+    country: "",
+    language: "",
+    email: "",
+  });
+
   const [isEditing, setIsEditing] = useState(false);
   const [isUpdatingEmail, setIsUpdatingEmail] = useState(false);
   const [isVerifyingOTP, setIsVerifyingOTP] = useState(false);
   const [newEmail, setNewEmail] = useState("");
   const [otp, setOtp] = useState(["", "", "", ""]);
   const otpInputs = useRef([]);
+  const [errorMessage, setErrorMessage] = useState(""); // For error feedback
+
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        fullName: profile.full_name || "",
+        gender: profile.gender || "",
+        country: profile.country || "",
+        language: profile.language || "",
+        email: profile.user || "",
+      });
+      if (profile.image) {
+        setPreviewImage(profile.image);
+      }
+    }
+  }, [profile]);
 
   const handleInputChange = (field) => (e) => {
     setFormData((prev) => ({
@@ -21,38 +77,92 @@ export default function ProfilePage() {
   };
 
   const handleEditToggle = () => {
+    if (isEditing) {
+      setFormData({
+        fullName: profile.full_name || "",
+        gender: profile.gender || "",
+        country: profile.country || "",
+        language: profile.language || "",
+        email: profile.user || "",
+      });
+    }
     setIsEditing(!isEditing);
   };
 
-  const handleUpdate = () => {
-    // Simulate API call to update profile
-    console.log("Updating profile with:", formData);
-    setIsEditing(false);
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUpdate = async () => {
+    const form = new FormData();
+    form.append("full_name", formData.fullName);
+    form.append("gender", formData.gender);
+    form.append("country", formData.country);
+    form.append("language", formData.language);
+    if (selectedImage) {
+      form.append("image", selectedImage);
+    }
+
+    try {
+      const res = await updateProfile(form).unwrap();
+      dispatch(setProfile(res));
+      setIsEditing(false);
+    } catch (err) {
+      console.error("Failed to update profile:", err);
+    }
   };
 
   const handleUpdateEmail = () => {
     setIsUpdatingEmail(true);
+    setErrorMessage("");
   };
 
-  const handleSendCode = () => {
+  const handleSendCode = async () => {
     if (newEmail) {
-      // Simulate sending OTP
-      console.log("Sending OTP to:", newEmail);
-      setIsVerifyingOTP(true);
-      setOtp(["", "", "", ""]);
+      try {
+        console.log("new email", newEmail);
+
+        await changeEmail({ new_email: newEmail }).unwrap();
+        setIsVerifyingOTP(true);
+        setOtp(["", "", "", ""]);
+        setErrorMessage("");
+      } catch (err) {
+        setErrorMessage(
+          err?.data?.message || "Failed to send OTP. Please try again."
+        );
+        console.error("Failed to send email OTP:", err);
+      }
     }
   };
 
-  const handleVerifyOTP = () => {
+  const handleVerifyOTP = async () => {
     const fullOtp = otp.join("");
+    // console.log(fullOtp);
     if (fullOtp.length === 4) {
-      // Simulate OTP verification
-      console.log("Verifying OTP:", fullOtp);
-      setFormData((prev) => ({ ...prev, email: newEmail }));
-      setIsUpdatingEmail(false);
-      setIsVerifyingOTP(false);
-      setNewEmail("");
-      setOtp(["", "", "", ""]);
+      try {
+        const res = await verifyEmailOtp({
+          new_email: newEmail,
+          otp: fullOtp,
+        }).unwrap();
+        setFormData((prev) => ({ ...prev, email: newEmail }));
+        dispatch(setProfile({ ...profile, user: newEmail })); // Update Redux store
+        setIsUpdatingEmail(false);
+        setIsVerifyingOTP(false);
+        setNewEmail("");
+        setOtp(["", "", "", ""]);
+        setErrorMessage("");
+      } catch (err) {
+        setErrorMessage(err?.data?.message || "Invalid OTP. Please try again.");
+        console.error("Failed to verify OTP:", err);
+      }
     }
   };
 
@@ -62,8 +172,6 @@ export default function ProfilePage() {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
-
-      // Auto-focus next input
       if (value && index < 3) {
         otpInputs.current[index + 1].focus();
       }
@@ -92,14 +200,6 @@ export default function ProfilePage() {
     }
   };
 
-  const [formData, setFormData] = useState({
-    fullName: "David Leclair",
-    gender: "",
-    country: "",
-    language: "",
-    email: "david@gmail.com",
-  });
-
   const genderOptions = [
     { value: "male", label: "Male" },
     { value: "female", label: "Female" },
@@ -126,15 +226,30 @@ export default function ProfilePage() {
       <div className="p-6">
         <div className="flex flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-4">
-            <div className="relative">
+            <div className="relative group">
               <img
-                src="/profile.png"
+                src={previewImage || "/profile.png"}
                 alt="Profile"
                 className="w-20 h-20 rounded-full object-cover border border-[#90a53a9f]"
               />
-              <button className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow-md border border-gray-200">
-                <Edit className="w-4 h-4 text-gray-600" />
-              </button>
+              {isEditing && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current.click()}
+                    className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow-md border border-gray-200 hover:cursor-pointer"
+                  >
+                    <Edit className="w-4 h-4 text-gray-600" />
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                </>
+              )}
             </div>
             <div>
               <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
@@ -154,6 +269,7 @@ export default function ProfilePage() {
           </button>
         </div>
       </div>
+
       <div className="max-w-screen-xl mx-auto rounded-lg">
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -193,10 +309,11 @@ export default function ProfilePage() {
               disabled={!isEditing}
             />
           </div>
+
           {isEditing && (
             <button
               onClick={handleUpdate}
-              className="bg-[#90A53A] text-white px-6 py-2 rounded-md hover:bg-[#7a8f32] transition-colors mb-6"
+              className="bg-[#90A53A] text-white px-6 py-2 rounded-md hover:bg-[#7a8f32] hover:cursor-pointer transition-colors mb-6"
             >
               Update Profile
             </button>
@@ -229,6 +346,9 @@ export default function ProfilePage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Enter 4-digit OTP
                   </label>
+                  {errorMessage && (
+                    <p className="text-red-500 text-sm mb-2">{errorMessage}</p>
+                  )}
                   <div className="flex space-x-2" onPaste={handleOtpPaste}>
                     {otp.map((digit, index) => (
                       <input
@@ -246,9 +366,9 @@ export default function ProfilePage() {
                   <button
                     onClick={handleVerifyOTP}
                     className="mt-4 bg-[#90A53A] text-white px-4 py-2 rounded-md hover:bg-[#7a8f32] transition-colors hover:cursor-pointer"
-                    disabled={otp.join("").length !== 4}
+                    disabled={otp.join("").length !== 4 || isVerifyingOtp}
                   >
-                    Verify OTP
+                    {isVerifyingOtp ? "Verifying..." : "Verify OTP"}
                   </button>
                 </div>
               ) : (
@@ -261,12 +381,15 @@ export default function ProfilePage() {
                     onChange={(e) => setNewEmail(e.target.value)}
                     type="email"
                   />
+                  {errorMessage && (
+                    <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+                  )}
                   <button
                     onClick={handleSendCode}
                     className="mt-4 bg-[#90A53A] text-white px-4 py-2 rounded-md hover:bg-[#7a8f32] transition-colors hover:cursor-pointer"
-                    disabled={!newEmail}
+                    disabled={!newEmail || isSendingEmail}
                   >
-                    Send Code
+                    {isSendingEmail ? "Sending..." : "Send Code"}
                   </button>
                 </div>
               )}

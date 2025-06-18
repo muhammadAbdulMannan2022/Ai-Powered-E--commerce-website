@@ -3,6 +3,7 @@ import cartSlice from "./features/cart/cartSlice";
 import { authApi } from "./features/auth/AuthSlice";
 import profileSlice from "./Profile/ProfileSlice";
 import { productApi } from "./features/Products/ProductsSlice";
+import { profileApi } from "./Profile/ProfileGetSlice";
 
 const store = configureStore({
   reducer: {
@@ -10,11 +11,13 @@ const store = configureStore({
     [authApi.reducerPath]: authApi.reducer, // ✅ RTK Query reducer
     profile: profileSlice,
     [productApi.reducerPath]: productApi.reducer,
+    [profileApi.reducerPath]: profileApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(authApi.middleware)
-      .concat(productApi.middleware),
+      .concat(productApi.middleware)
+      .concat(profileApi.middleware),
 });
 
 // localStorage still for cart or token if needed

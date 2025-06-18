@@ -18,12 +18,6 @@ export default function BottomFreeSamples({ product }) {
     }));
   };
 
-  const gateKitDetails = [
-    "Maximum gate width: 4'0\"",
-    "For gates wider than 4', a gate wheel (available at your local hardware store) is recommended to support weight.",
-    "Consider adding an extra hinge kit (available in the accessory section).",
-  ];
-
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white">
       {/* Description Section */}
