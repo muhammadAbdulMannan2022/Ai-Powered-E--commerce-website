@@ -19,6 +19,9 @@ export const productApi = createApi({
     getCategorysAllProduct: builder.query({
       query: (slug) => `api/wood-categories/${slug}/`,
     }),
+    getHeightOptions: builder.query({
+      query: () => "api/fence-height-options/",
+    }),
   }),
 });
 
@@ -26,4 +29,5 @@ export const {
   useGetProductsQuery,
   useGetProductQuery,
   useGetCategorysAllProductQuery,
+  useGetHeightOptionsQuery, // ✅ Correct
 } = productApi;

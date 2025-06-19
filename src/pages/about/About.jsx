@@ -33,9 +33,6 @@ export default function About() {
           primaryButtonIcon={<FaShoppingCart className="mr-2" />}
           secondaryButtonIcon={<FaEnvelope className="mr-2" />}
         />
-        <div className="absolute bottom-[-15px] right-3 md:right-32 bg-[#94B316] text-white text-3xl p-1 rounded-full">
-          <MdOutlineSupportAgent />
-        </div>
       </div>
       <CostExp />
       <Mission />

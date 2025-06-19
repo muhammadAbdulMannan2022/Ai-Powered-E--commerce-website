@@ -13,7 +13,8 @@ import {
   FaInstagramSquare,
 } from "react-icons/fa";
 import Button from "../../helpers/Button";
-import { addToCart } from "../../redux/features/cart/cartSlice";
+import { useAddItemsToCartMutation } from "../../redux/Profile/ProfileGetSlice";
+import { useGetHeightOptionsQuery } from "../../redux/features/Products/ProductsSlice";
 
 export default function TopFreeSamples({ product }) {
   // Map colorOptions from color_images
@@ -40,10 +41,12 @@ export default function TopFreeSamples({ product }) {
   );
   const [linearFootage, setLinearFootage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [fenceHeight, setFenceHeight] = useState("6");
-
-  const dispatch = useDispatch();
+  const [errorMessage, setErrorMessage] = useState(""); // For error feedback
   const navigate = useNavigate();
+  const [fenceHeightId, setFenceHeightId] = useState(null);
+  const [addItemsToCart, { isLoading, error }] = useAddItemsToCartMutation(); // RTK Query mutation hook
+  const { data: heights, isLoading: heightIsLoading } =
+    useGetHeightOptionsQuery();
 
   // Parse unit price with fallback
   const unitPriceNumber = Number.parseFloat(product.actual_price) || 0;
@@ -62,6 +65,12 @@ export default function TopFreeSamples({ product }) {
       img.url === sliderImages[selectedImageIndex] &&
       img.colorName === selectedColor
   );
+  // height
+  useEffect(() => {
+    if (!heightIsLoading && heights?.length && !fenceHeightId) {
+      setFenceHeightId(heights[0].id);
+    }
+  }, [heightIsLoading, heights]);
 
   // Ensure initial image and index are valid
   useEffect(() => {
@@ -78,27 +87,6 @@ export default function TopFreeSamples({ product }) {
     }
   }, [selectedColor, sliderImages, colorOptions]);
 
-  // Navigation handlers
-  const handlePreviousImage = () => {
-    setSelectedImageIndex((prev) =>
-      sliderImages.length > 0
-        ? prev === 0
-          ? sliderImages.length - 1
-          : prev - 1
-        : 0
-    );
-  };
-
-  const handleNextImage = () => {
-    setSelectedImageIndex((prev) =>
-      sliderImages.length > 0
-        ? prev === sliderImages.length - 1
-          ? 0
-          : prev + 1
-        : 0
-    );
-  };
-
   const handleThumbnailClick = (index) => {
     const clickedImage = allImages[index];
     setSelectedColor(clickedImage.colorName);
@@ -111,44 +99,48 @@ export default function TopFreeSamples({ product }) {
   };
 
   const handleLinearFootageChange = (e) => {
-    const value = Number.parseInt(e.target.value);
-    setLinearFootage(value);
+    const value = e.target.value;
+    setLinearFootage(Number.parseInt(value));
   };
 
   const handleFenceHeightChange = (e) => {
-    setFenceHeight(e.target.value);
+    setFenceHeightId(Number(e.target.value));
   };
 
   const selected =
     colorOptions.find((c) => c.name === selectedColor) || colorOptions[0];
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!linearFootage) {
-      alert("Enter Linear Footage ");
-    } else {
-      const item = {
-        productId: product.id,
-        name: product.name,
-        selectedColor,
-        colorHex: selected?.hex || "#000000",
-        quantity,
-        unitPrice: unitPriceNumber.toFixed(2),
-        totalPrice: (quantity * unitPriceNumber).toFixed(2),
-        image:
-          sliderImages[selectedImageIndex] ||
-          "/placeholder.svg?height=400&width=400",
-        linearFootage: L,
-        fenceHeight,
-        boards: Boards,
-        posts: Posts,
-        bottomRails: BottomRails,
-        topRails: TopRails,
-        stops: Stops,
-        caps: Caps,
-      };
+      setErrorMessage("Enter Linear Footage");
+      return;
+    }
 
-      dispatch(addToCart(item));
-      navigate("/cart");
+    // Find the selected color's color_option object to get color_option_id
+    const selectedColorOption = product.color_images?.find(
+      (item) => item.color_option.name === selectedColor
+    )?.color_option;
+
+    // Prepare cart data
+    const cartData = {
+      wood_type_id: product.id,
+      linear_footage: linearFootage,
+      num_sets: quantity,
+      color_option_id: selectedColorOption?.id || null,
+      fence_height_id: fenceHeightId,
+    };
+    console.log(cartData);
+    try {
+      // Trigger the mutation
+      await addItemsToCart(cartData).unwrap();
+      setErrorMessage(""); // Clear any previous errors
+      navigate("/cart"); // Navigate to cart on success
+    } catch (err) {
+      // Handle error
+      setErrorMessage(
+        err?.data?.message || "Failed to add items to cart. Please try again."
+      );
+      console.error("Add to cart error:", err);
     }
   };
 
@@ -176,24 +168,6 @@ export default function TopFreeSamples({ product }) {
               alt={`${product.name} - ${selectedColor}`}
               className="w-full h-full object-cover"
             />
-            {/* <button
-              onClick={handlePreviousImage}
-              className={`absolute left-4 top-1/2 transform -translate-y-1/2 bg-[#94B3165E] hover:bg-[#94b31677] text-white p-2 rounded-full transition-colors ${
-                sliderImages.length <= 1 ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-              disabled={sliderImages.length <= 1}
-            >
-              <FaChevronLeft className="w-4 h-4" />
-            </button>
-            <button
-              onClick={handleNextImage}
-              className={`absolute right-4 top-1/2 transform -translate-y-1/2 bg-[#94B3165E] hover:bg-[#94b31677] text-white p-2 rounded-full transition-colors ${
-                sliderImages.length <= 1 ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-              disabled={sliderImages.length <= 1}
-            >
-              <FaChevronRight className="w-4 h-4" />
-            </button> */}
           </div>
 
           {/* Thumbnails */}
@@ -293,7 +267,6 @@ export default function TopFreeSamples({ product }) {
               value={linearFootage}
               onChange={handleLinearFootageChange}
               className="w-full p-3 border border-gray-300 rounded-lg"
-              // min="1"
             />
           </div>
 
@@ -303,13 +276,14 @@ export default function TopFreeSamples({ product }) {
               Choose Fence Height <span className="text-gray-500">(Feet)</span>
             </label>
             <select
-              value={fenceHeight}
+              value={fenceHeightId || ""}
               onChange={handleFenceHeightChange}
               className="w-full p-3 border border-gray-300 rounded-lg"
             >
-              <option value="6">6 ft</option>
-              <option value="8">8 ft</option>
-              <option value="10">10 ft</option>
+              {!heightIsLoading &&
+                heights.map((height) => (
+                  <option value={height.id}>{height.height_ft} ft</option>
+                ))}
             </select>
           </div>
 
@@ -362,14 +336,18 @@ export default function TopFreeSamples({ product }) {
             <div className="text-2xl font-bold mb-4">
               Total: ${isNaN(totalPrice) ? "0" : totalPrice.toLocaleString()}
             </div>
-
+            {/* Error */}
+            {errorMessage && (
+              <div className="mb-4 text-red-500 text-sm">{errorMessage}</div>
+            )}
             {/* Buttons */}
             <div className="flex space-x-4 mb-6">
               <Button label="Shop Now" />
               <Button
-                label="Add to Cart"
+                label={isLoading ? "Adding..." : "Add to Cart"}
                 variant="outline"
                 onClick={handleAddToCart}
+                disabled={isLoading}
               />
             </div>
 

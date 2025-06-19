@@ -34,8 +34,7 @@ const Card = ({
         )}
 
         <div className="flex items-center gap-2 mt-2">
-          <p className="font-bold text-base">${price_display} / Sq.Ft</p>
-          <p className="text-xs text-gray-500 line-through">${actual_price}</p>
+          <p className="font-bold text-base">${actual_price} / Sq.Ft</p>
         </div>
 
         <div className="mt-3">
