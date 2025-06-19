@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { CustomInput } from "./Custom-input";
+import { useCheckoutMutation } from "../../redux/Profile/ProfileGetSlice";
 
 export default function CheckoutForm({ setCurrentStep }) {
-  const [paymentMethod, setPaymentMethod] = useState("credit-card");
-  const [rememberMe, setRememberMe] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -14,12 +13,9 @@ export default function CheckoutForm({ setCurrentStep }) {
     city: "",
     state: "",
     zipCode: "",
-    cardNumber: "",
-    expirationDate: "",
-    securityCode: "",
-    nameOnCard: "",
   });
   const [errors, setErrors] = useState({});
+  const [checkout, { isLoading, error }] = useCheckoutMutation();
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -49,53 +45,41 @@ export default function CheckoutForm({ setCurrentStep }) {
     if (!formData.city.trim()) newErrors.city = "City is required";
     if (!formData.state.trim()) newErrors.state = "State is required";
     if (!formData.zipCode.trim()) newErrors.zipCode = "ZIP code is required";
-    else if (!/^\d{5}(-\d{4})?$/.test(formData.zipCode))
-      newErrors.zipCode = "Please enter a valid ZIP code";
-
-    // Credit Card Validation (only if credit-card is selected)
-    if (paymentMethod === "credit-card") {
-      if (!formData.cardNumber.trim())
-        newErrors.cardNumber = "Card number is required";
-      else if (!/^\d{4}\s\d{4}\s\d{4}\s\d{4}$/.test(formData.cardNumber))
-        newErrors.cardNumber = "Please enter a valid 16-digit card number";
-
-      if (!formData.expirationDate.trim())
-        newErrors.expirationDate = "Expiration date is required";
-      else if (!/^(0[1-9]|1[0-2])\/20\d{2}$/.test(formData.expirationDate))
-        newErrors.expirationDate =
-          "Please enter a valid expiration date (MM/YYYY)";
-      else {
-        const [month, year] = formData.expirationDate.split("/").map(Number);
-        const now = new Date();
-        const currentYear = now.getFullYear();
-        const currentMonth = now.getMonth() + 1;
-        if (
-          year < currentYear ||
-          (year === currentYear && month < currentMonth)
-        )
-          newErrors.expirationDate = "Card has expired";
-      }
-
-      if (!formData.securityCode.trim())
-        newErrors.securityCode = "Security code is required";
-      else if (!/^\d{3,4}$/.test(formData.securityCode))
-        newErrors.securityCode =
-          "Please enter a valid 3 or 4-digit security code";
-
-      if (!formData.nameOnCard.trim())
-        newErrors.nameOnCard = "Name on card is required";
-    }
+    // else if (!/^\d{5}(-\d{4})?$/.test(formData.zipCode))
+    //   newErrors.zipCode = "Please enter a valid ZIP code";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
       console.log("Form submitted:", formData);
+      try {
+        const checkoutData = {
+          shipping_address: {
+            full_name: `${formData.firstName} ${formData.lastName}`,
+            phone_number: formData.phone,
+            email: formData.email,
+            street_address: formData.streetAddress,
+            city: formData.city,
+            state_province: formData.state,
+            zip_code: formData.zipCode,
+            country: formData.country,
+          },
+        };
+        const responce = await checkout(checkoutData).unwrap();
+        console.log(responce);
+        if (responce.session_url) {
+          window.location.href = responce.session_url;
+        }
+      } catch (error) {
+        setErrors(error);
+        console.log(error, "error on checkout");
+      }
     }
-    setCurrentStep(3);
+    // setCurrentStep(3); // TODO: Change this
   };
 
   return (
@@ -225,128 +209,6 @@ export default function CheckoutForm({ setCurrentStep }) {
             required
           />
         </div>
-      </section>
-
-      {/* Payment Method */}
-      <section className="rounded-lg p-4 space-y-4">
-        <h2 className="text-xl font-semibold text-[#3F4919]">Payment Method</h2>
-        <div className="space-y-2">
-          <label
-            className={`flex items-center p-3 rounded-lg space-x-2 cursor-pointer transition 
-              ${
-                paymentMethod === "credit-card"
-                  ? "bg-[#94B3161A] border border-[#94B316] text-[#3F4919]"
-                  : "border border-gray-200 hover:bg-gray-50 text-gray-700"
-              }
-            `}
-          >
-            <input
-              type="radio"
-              value="credit-card"
-              checked={paymentMethod === "credit-card"}
-              onChange={(e) => setPaymentMethod(e.target.value)}
-              className="accent-[#94B316]"
-            />
-            <span className="text-sm font-medium">Pay With Credit Card</span>
-          </label>
-
-          <label
-            className={`flex items-center p-3 rounded-lg space-x-2 cursor-pointer transition 
-              ${
-                paymentMethod === "stripe"
-                  ? "bg-[#94B3161A] border border-[#94B316] text-[#3F4919]"
-                  : "border border-gray-200 hover:bg-gray-50 text-gray-700"
-              }
-            `}
-          >
-            <input
-              type="radio"
-              value="stripe"
-              checked={paymentMethod === "stripe"}
-              onChange={(e) => setPaymentMethod(e.target.value)}
-              className="accent-gray-600"
-            />
-            <span className="text-sm font-medium">Stripe</span>
-          </label>
-        </div>
-
-        {paymentMethod === "credit-card" && (
-          <div className="space-y-4 pt-4 border-t border-gray-100">
-            <CustomInput
-              label="Card Number"
-              placeholder="1234 5678 9012 3456"
-              value={formData.cardNumber}
-              onChange={(e) => {
-                const formatted = e.target.value
-                  .replace(/\s/g, "")
-                  .replace(/(.{4})/g, "$1 ")
-                  .trim();
-                handleInputChange("cardNumber", formatted);
-              }}
-              maxLength={19}
-              error={errors.cardNumber}
-              helperText="Enter your 16-digit card number"
-              required
-            />
-            <div className="grid grid-cols-2 gap-4">
-              <CustomInput
-                label="Expiration Date"
-                placeholder="MM/YYYY"
-                value={formData.expirationDate}
-                onChange={(e) => {
-                  let value = e.target.value.replace(/\D/g, "");
-                  if (value.length >= 2) {
-                    value = value.substring(0, 2) + "/" + value.substring(2, 6);
-                  }
-                  handleInputChange("expirationDate", value);
-                }}
-                maxLength={7}
-                error={errors.expirationDate}
-                required
-              />
-              <CustomInput
-                label="Security Code"
-                placeholder="123"
-                type="password"
-                value={formData.securityCode}
-                onChange={(e) =>
-                  handleInputChange(
-                    "securityCode",
-                    e.target.value.replace(/\D/g, "")
-                  )
-                }
-                maxLength={4}
-                error={errors.securityCode}
-                helperText="3-4 digits on back of card"
-                required
-              />
-            </div>
-            <CustomInput
-              label="Name on Card"
-              placeholder="Enter full name as shown on card"
-              value={formData.nameOnCard}
-              onChange={(e) => handleInputChange("nameOnCard", e.target.value)}
-              error={errors.nameOnCard}
-              required
-            />
-          </div>
-        )}
-      </section>
-
-      {/* Remember Me */}
-      <section className="rounded-lg p-4 space-y-2">
-        <h2 className="text-xl font-semibold text-[#3F4919]">Remember Me</h2>
-        <label className="flex items-center space-x-2 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={rememberMe}
-            onChange={(e) => setRememberMe(e.target.checked)}
-            className="accent-[#94B316]"
-          />
-          <span className="text-sm text-[#94B316]">
-            Save My Information For A Faster Checkout
-          </span>
-        </label>
       </section>
 
       {/* Submit Button */}

@@ -55,8 +55,21 @@ export const profileApi = createApi({
     updateCartItemData: builder.mutation({
       query: (updates) => ({
         url: `api/cart/items/${updates.itemId}/`,
-        method: "PPATCH",
+        method: "PATCH",
         body: updates.data,
+      }),
+    }),
+    removeCartItem: builder.mutation({
+      query: (id) => ({
+        url: `api/cart/items/${id}/`,
+        method: "DELETE",
+      }),
+    }),
+    checkout: builder.mutation({
+      query: (checkoutData) => ({
+        url: `api/orders/place/`,
+        method: "POST",
+        body: checkoutData,
       }),
     }),
   }),
@@ -72,4 +85,6 @@ export const {
   useAddItemsToCartMutation,
   useGetCartQuery,
   useUpdateCartItemDataMutation,
+  useRemoveCartItemMutation,
+  useCheckoutMutation,
 } = profileApi;
