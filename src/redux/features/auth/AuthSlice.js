@@ -1,7 +1,7 @@
 // features/auth/authApi.js
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const BASE_URL = "https://21a6-115-127-156-9.ngrok-free.app/";
+const BASE_URL = "https://62a3-115-127-156-9.ngrok-free.app/";
 
 export const authApi = createApi({
   reducerPath: "authApi",

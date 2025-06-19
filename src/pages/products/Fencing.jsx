@@ -51,11 +51,12 @@ export default function Fencing() {
             />
           ))}
         </div>
+        {console.log(category)}
 
         <Link
           to="/products/allProductByCategory"
           state={{
-            category: category.name,
+            category: category.slug,
             products: category.wood_types,
           }}
           className="text-sm text-green-700 hover:underline mt-10"
@@ -75,7 +76,7 @@ export default function Fencing() {
             categoryData.map((category) => renderSection(category))}
         </div>
       ) : location.pathname === "/products/allProductByCategory" ? (
-        <ProductsByCategory products={categoryData} />
+        <ProductsByCategory />
       ) : null}
     </>
   );

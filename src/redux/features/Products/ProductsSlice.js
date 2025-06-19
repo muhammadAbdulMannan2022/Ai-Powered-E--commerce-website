@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const productApi = createApi({
   reducerPath: "productApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://21a6-115-127-156-9.ngrok-free.app/",
+    baseUrl: "https://62a3-115-127-156-9.ngrok-free.app/",
     prepareHeaders: (headers) => {
       headers.set("ngrok-skip-browser-warning", "true");
       return headers;
@@ -16,7 +16,14 @@ export const productApi = createApi({
     getProduct: builder.query({
       query: (slag) => `api/woodtypes/${slag}/`,
     }),
+    getCategorysAllProduct: builder.query({
+      query: (slug) => `api/wood-categories/${slug}/`,
+    }),
   }),
 });
 
-export const { useGetProductsQuery, useGetProductQuery } = productApi;
+export const {
+  useGetProductsQuery,
+  useGetProductQuery,
+  useGetCategorysAllProductQuery,
+} = productApi;

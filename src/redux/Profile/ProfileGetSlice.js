@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const profileApi = createApi({
   reducerPath: "profileApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://21a6-115-127-156-9.ngrok-free.app", // replace with your actual base URL
+    baseUrl: "https://62a3-115-127-156-9.ngrok-free.app", // replace with your actual base URL
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("access_token");
       if (token) {
@@ -42,6 +42,23 @@ export const profileApi = createApi({
         body: otpData,
       }),
     }),
+    getCart: builder.query({
+      query: () => "api/cart/",
+    }),
+    addItemsToCart: builder.mutation({
+      query: (cart) => ({
+        url: "api/cart/add/",
+        method: "POST",
+        body: cart,
+      }),
+    }),
+    updateCartItemData: builder.mutation({
+      query: (updates) => ({
+        url: `api/cart/items/${updates.itemId}/`,
+        method: "PPATCH",
+        body: updates.data,
+      }),
+    }),
   }),
 });
 
@@ -51,4 +68,8 @@ export const {
   useGetRecentQuery,
   useChangeEmailMutation,
   useEmailOtpVerifyMutation,
+  // cart
+  useAddItemsToCartMutation,
+  useGetCartQuery,
+  useUpdateCartItemDataMutation,
 } = profileApi;

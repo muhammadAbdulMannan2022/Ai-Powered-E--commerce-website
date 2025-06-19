@@ -360,7 +360,7 @@ export default function TopFreeSamples({ product }) {
           {/* Total Price */}
           <div className="border-t pt-4">
             <div className="text-2xl font-bold mb-4">
-              Total: ${totalPrice.toLocaleString()}
+              Total: ${isNaN(totalPrice) ? "0" : totalPrice.toLocaleString()}
             </div>
 
             {/* Buttons */}

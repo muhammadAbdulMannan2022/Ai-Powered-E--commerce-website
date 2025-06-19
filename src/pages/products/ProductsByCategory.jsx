@@ -1,22 +1,25 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router"; // Updated to react-router-dom
+import { useLocation } from "react-router";
 import Card from "../../helpers/Card";
+import { useGetCategorysAllProductQuery } from "../../redux/features/Products/ProductsSlice";
 
-export default function ProductsByCategory({ products }) {
+export default function ProductsByCategory() {
   const location = useLocation();
-  const category = location.state?.category || "All Products";
-  const categoryProducts =
-    location.state?.products ||
-    products.filter((product) => product.category === category);
+  const category = location.state?.category || "all-products";
 
-  // Pagination state
+  const { data, isLoading, isError, refetch } = useGetCategorysAllProductQuery(
+    category,
+    {
+      skip: !category || category === "all-products",
+    }
+  );
+
+  const categoryProducts = data?.wood_types || [];
+
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 9;
 
-  // Calculate total pages
   const totalPages = Math.ceil(categoryProducts.length / productsPerPage);
-
-  // Get current page products
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = categoryProducts.slice(
@@ -24,24 +27,22 @@ export default function ProductsByCategory({ products }) {
     indexOfLastProduct
   );
 
-  // Handle page change
+  console.log("Current Products:", currentProducts); // Debug log
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top on page change
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Generate page numbers for display
   const getPageNumbers = () => {
     const pageNumbers = [];
-    const maxPagesToShow = 5; // Show up to 5 page numbers at a time
+    const maxPagesToShow = 5;
     let startPage, endPage;
 
     if (totalPages <= maxPagesToShow) {
-      // Show all pages if total pages <= 5
       startPage = 1;
       endPage = totalPages;
     } else {
-      // Show a range of pages around the current page
       const maxPagesBefore = Math.floor(maxPagesToShow / 2);
       const maxPagesAfter = Math.ceil(maxPagesToShow / 2) - 1;
 
@@ -64,19 +65,58 @@ export default function ProductsByCategory({ products }) {
     return pageNumbers;
   };
 
+  if (isLoading) {
+    return (
+      <div className="text-center py-10">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-700 mx-auto"></div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="text-center py-10 text-red-500">
+        Error fetching products.{" "}
+        <button onClick={() => refetch()} className="underline text-blue-500">
+          Try again
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-7xl mx-auto py-10 px-4 md:px-10">
-      <h2 className="text-4xl mb-4 font-semibold text-[#3F4919]">{category}</h2>
+      <h2 className="text-4xl mb-4 font-semibold text-[#3F4919]">
+        {data?.name || category.replace(/-/g, " ")}
+      </h2>
       <div className="flex flex-wrap gap-4 items-center justify-center">
-        {currentProducts.map((product) => (
-          <Card key={product.id} {...product} />
-        ))}
+        {currentProducts.length === 0 ? (
+          <div className="text-center py-10">No products found.</div>
+        ) : (
+          currentProducts.map((product) => (
+            <Card
+              key={product.id}
+              id={product.id}
+              name={product.name}
+              tagline={product.tagline}
+              secondary_tagline={product.secondary_tagline}
+              price_display={product.price_display}
+              actual_price={product.actual_price}
+              available_colors={
+                Array.isArray(product.color_images)
+                  ? product.color_images.map((img) => img.color_option)
+                  : []
+              }
+              image_url={product.color_images?.[0]?.image_url || ""}
+              altText={product.name}
+              slug={product.slug}
+            />
+          ))
+        )}
       </div>
 
-      {/* Pagination Controls */}
       {totalPages > 1 && (
         <div className="flex justify-center items-center mt-8 space-x-2">
-          {/* Previous Button */}
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
@@ -89,7 +129,6 @@ export default function ProductsByCategory({ products }) {
             Previous
           </button>
 
-          {/* Page Numbers */}
           {getPageNumbers().map((pageNumber) => (
             <button
               key={pageNumber}
@@ -104,12 +143,10 @@ export default function ProductsByCategory({ products }) {
             </button>
           ))}
 
-          {/* Ellipsis for skipped pages */}
           {totalPages > 5 && currentPage < totalPages - 2 && (
             <span className="px-4 py-2 text-sm font-medium">...</span>
           )}
 
-          {/* Last Page (if not already shown) */}
           {totalPages > 5 &&
             getPageNumbers()[getPageNumbers().length - 1] < totalPages && (
               <button
@@ -124,7 +161,6 @@ export default function ProductsByCategory({ products }) {
               </button>
             )}
 
-          {/* Next Button */}
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
