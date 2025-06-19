@@ -35,7 +35,20 @@ export default function Fencing() {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center w-full">
           {previewProducts.map((product) => (
-            <Card key={product.id} {...product} />
+            <Card
+              key={product.id}
+              slug={product.slug}
+              name={product.name}
+              tagline={product.tagline}
+              secondary_tagline={product.secondary_tagline}
+              price_display={product.price_display}
+              actual_price={product.actual_price}
+              available_colors={product.color_images}
+              image_url={
+                product.color_images[0]?.image_url || "/placeholder.svg"
+              }
+              altText={`${product.name} product image`}
+            />
           ))}
         </div>
 

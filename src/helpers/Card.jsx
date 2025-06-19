@@ -11,6 +11,7 @@ const Card = ({
   available_colors,
   image_url,
   altText = "Product image",
+  slug,
 }) => {
   return (
     <div className="w-[90%] sm:w-[85%] md:w-[90%] lg:w-[95%] xl:w-[90%] max-w-sm border border-gray-200 rounded-xl overflow-hidden bg-white shadow-md flex flex-col interFont">
@@ -53,7 +54,7 @@ const Card = ({
         <div className="mt-4 flex flex-wrap gap-2">
           <Link
             to="/free_samples"
-            state={{ id }}
+            state={{ id: slug }}
             className="bg-green-800 text-white px-4 py-1.5 rounded text-sm font-medium hover:bg-green-900 transition-colors w-full sm:w-auto"
           >
             Shop Now
