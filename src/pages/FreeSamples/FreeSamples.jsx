@@ -31,6 +31,7 @@ export default function FreeSamples() {
   useEffect(() => {
     if (!isLoading) setSeclectedProduct(product);
   }, [product, isLoading]);
+
   return (
     <div>
       <TopFreeSamples product={selectedProduct} />

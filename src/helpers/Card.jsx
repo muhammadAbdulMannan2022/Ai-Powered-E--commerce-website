@@ -50,13 +50,14 @@ const Card = ({
         <div className="mt-3">
           <p className="text-sm text-gray-600 mb-1">Available Colors:</p>
           <div className="flex gap-1">
-            {available_colors.map((color) => (
-              <FaCircle
-                key={color.id}
-                className="text-lg"
-                style={{ color: color.hex_code }}
-              />
-            ))}
+            {available_colors &&
+              available_colors.map((color) => (
+                <FaCircle
+                  key={color.id}
+                  className="text-lg"
+                  style={{ color: color.hex_code }}
+                />
+              ))}
           </div>
         </div>
 

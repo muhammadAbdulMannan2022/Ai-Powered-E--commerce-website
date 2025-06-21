@@ -2,6 +2,7 @@ import React from "react";
 import Title from "../../../helpers/Title";
 import Slider from "../../../helpers/Slider";
 import Button from "../../../helpers/Button";
+import { Link } from "react-router";
 
 export default function ProductsSlider() {
   return (
@@ -30,7 +31,9 @@ export default function ProductsSlider() {
         <div className="w-7xl">
           <Slider />
         </div>
-        <Button label="View All Products" className="mt-8" />
+        <Link to={"/products/fencing_list"}>
+          <Button label="View All Products" className="mt-8" />
+        </Link>
       </div>
     </div>
   );
