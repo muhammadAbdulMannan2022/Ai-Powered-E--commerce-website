@@ -11,6 +11,7 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaInstagramSquare,
+  FaCartPlus,
 } from "react-icons/fa";
 import Button from "../../helpers/Button";
 import { useAddItemsToCartMutation } from "../../redux/Profile/ProfileGetSlice";
@@ -342,12 +343,13 @@ export default function TopFreeSamples({ product }) {
             )}
             {/* Buttons */}
             <div className="flex space-x-4 mb-6">
-              <Button label="Shop Now" />
+              {/* <Button label="Shop Now" /> */}
               <Button
                 label={isLoading ? "Adding..." : "Add to Cart"}
                 variant="outline"
                 onClick={handleAddToCart}
                 disabled={isLoading}
+                icon={<FaCartPlus />}
               />
             </div>
 

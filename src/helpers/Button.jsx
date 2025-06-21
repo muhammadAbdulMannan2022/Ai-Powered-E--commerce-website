@@ -9,6 +9,7 @@ const Button = ({
   size = "medium",
   disabled = false,
   className = "",
+  icon,
   ...props
 }) => {
   // Base styles for the button
@@ -40,10 +41,12 @@ const Button = ({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`${buttonClasses} rounded-full hover:cursor-pointer`}
+      className={`${buttonClasses} rounded-full hover:cursor-pointer ${
+        icon && "flex items-center gap-3"
+      }`}
       {...props}
     >
-      {label}
+      {icon && icon} {label}
     </button>
   );
 };
