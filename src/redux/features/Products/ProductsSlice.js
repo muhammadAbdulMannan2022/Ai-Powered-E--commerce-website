@@ -22,6 +22,14 @@ export const productApi = createApi({
     getHeightOptions: builder.query({
       query: () => "api/fence-height-options/",
     }),
+    // ai
+    aiResponce: builder.mutation({
+      query: (data) => ({
+        url: "chat/chat_with_bot/",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -30,4 +38,5 @@ export const {
   useGetProductQuery,
   useGetCategorysAllProductQuery,
   useGetHeightOptionsQuery, // ✅ Correct
+  useAiResponceMutation,
 } = productApi;
