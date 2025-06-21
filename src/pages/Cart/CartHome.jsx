@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router"; // Import useSearchParams
 import CartPage from "./Cart";
 import Checkout from "./Checkout";
 import CompleteOrder from "./CompleteOrder";
 
-function StepThree() {
-  return <div>Step 3: Order Complete</div>;
-}
-
 export default function CartHome() {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [searchParams] = useSearchParams(); // Get query parameters
+  const [currentStep, setCurrentStep] = useState(() => {
+    // Get the 'step' query parameter and convert it to a number
+    const stepParam = searchParams.get("step");
+    const stepNumber = parseInt(stepParam, 10);
+    // If stepParam exists and is a valid number between 1 and 3, use it; otherwise, default to 1
+    return stepParam && !isNaN(stepNumber) && stepNumber >= 1 && stepNumber <= 3
+      ? stepNumber
+      : 1;
+  });
 
   const steps = [
     { label: "Shopping Cart" },

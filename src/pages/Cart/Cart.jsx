@@ -211,6 +211,10 @@ export default function CartPage({ currentStep, setCurrentStep }) {
 
   // Handle checkout
   const handleCheckout = async () => {
+    if (localCartItems.length == 0) {
+      setErrorMessage("Your cart is empty.....");
+      return;
+    }
     setIsCheckingOut(true);
     setErrorMessage(null);
 
