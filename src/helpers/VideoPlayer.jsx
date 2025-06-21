@@ -12,6 +12,7 @@ const VideoPlayer = ({
   controlsClassName = "",
   threshold = 0.5,
   poster = "",
+  vidClass,
   ...props
 }) => {
   const videoRef = useRef(null);
@@ -140,7 +141,7 @@ const VideoPlayer = ({
         loop={loop}
         muted={isMuted}
         poster={poster}
-        className="w-full h-auto max-h-[400px] object-cover rounded-lg hover:cursor-pointer"
+        className={`w-full h-auto max-h-[400px] object-cover rounded-lg hover:cursor-pointer ${vidClass}`}
         onClick={handleVideoClick}
       />
       {poster && showPoster && (

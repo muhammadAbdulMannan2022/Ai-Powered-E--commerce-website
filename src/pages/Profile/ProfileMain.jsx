@@ -224,8 +224,8 @@ export default function ProfilePage() {
 
   return (
     <div className=" bg-gray-50 px-4 sm:px-6 py-8 lg:px-40">
-      <div className="p-6">
-        <div className="flex flex-row items-center justify-between gap-4">
+      <div className="p-6 w-full  flex items-center justify-center">
+        <div className="flex flex-row items-center justify-between gap-4 lg:max-w-screen-xl  w-full">
           <div className="flex items-center space-x-4">
             <div className="relative group">
               <img

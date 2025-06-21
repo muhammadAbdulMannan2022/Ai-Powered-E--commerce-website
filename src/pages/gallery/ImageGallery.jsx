@@ -50,14 +50,14 @@ export default function ImageGallery({ projects }) {
         return (
           <div key={i} className="mb-20">
             <h2 className="text-5xl font-bold mb-10 text-[#688301] text-center">
-              {project.title}
+              {project.category}
             </h2>
 
             <div className="columns-1 sm:columns-2 md:columns-3 gap-4 space-y-4">
               {previewImages.map((img, index) => (
                 <img
-                  key={index}
-                  src={img}
+                  key={img.id} // Use img.id instead of index for unique keys
+                  src={"https://res.cloudinary.com/ds97wytcs/" + img.image_file} // Access image_file
                   onClick={() => openModal(project, index)}
                   className="w-full mb-4 cursor-pointer rounded-lg hover:opacity-90 transition-all duration-200 break-inside-avoid"
                   alt={`Project ${i} image ${index}`}
@@ -71,7 +71,10 @@ export default function ImageGallery({ projects }) {
                   className="relative w-full h-auto aspect-[4/3] bg-gray-200 cursor-pointer rounded-lg flex items-center justify-center text-white text-xl font-bold hover:opacity-90 transition-all duration-200"
                 >
                   <img
-                    src={project.images[7]}
+                    src={
+                      "https://res.cloudinary.com/ds97wytcs/" +
+                      project.images[7].image_file
+                    } // Access image_file
                     alt="more images"
                     className="absolute w-full h-full object-cover rounded-lg opacity-60"
                   />
@@ -86,42 +89,52 @@ export default function ImageGallery({ projects }) {
       })}
 
       {/* Fullscreen Modal */}
-      <Modal
+
+      <div
         isOpen={isOpen}
         onRequestClose={closeModal}
         contentLabel="Image Modal"
-        className="fixed inset-0 bg-black bg-opacity-95 flex items-center justify-center z-50"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-70"
+        className={`${
+          isOpen ? "fixed" : "hidden"
+        } inset-0 bg-black bg-opacity-95 flex items-center justify-center z-50 `}
       >
-        {activeProject && (
-          <div className="relative w-full max-w-5xl mx-auto text-white">
-            <button
-              onClick={closeModal}
-              className="absolute hover:cursor-pointer top-4 right-4 text-3xl text-white z-50 bg-black/80 p-2 rounded-full"
-            >
-              <FaX />
-            </button>
-            <button
-              onClick={prevSlide}
-              className="absolute hover:cursor-pointer left-4 top-1/2 transform -translate-y-1/2 text-4xl z-50"
-            >
-              <FaLessThan />
-            </button>
-            <button
-              onClick={nextSlide}
-              className="absolute hover:cursor-pointer right-4 top-1/2 transform -translate-y-1/2 text-4xl z-50"
-            >
-              <FaGreaterThan />
-            </button>
-            <img
-              src={activeProject.images[currentIndex]}
-              alt={`Slide ${currentIndex}`}
-              className="w-full max-h-[80vh] object-contain mx-auto"
-            />
-            <p className="text-center mt-4 text-lg">{activeProject.title}</p>
-          </div>
-        )}
-      </Modal>
+        <div className="w-full h-full bg-black flex items-center justify-center">
+          {activeProject && (
+            <div className="relative w-full max-w-5xl mx-auto text-white">
+              <button
+                onClick={closeModal}
+                className="absolute hover:cursor-pointer top-4 right-4 text-3xl text-white z-50 bg-black/80 p-2 rounded-full"
+              >
+                <FaX />
+              </button>
+              <button
+                onClick={prevSlide}
+                className="absolute hover:cursor-pointer left-4 top-1/2 transform -translate-y-1/2 text-4xl z-50"
+              >
+                <FaLessThan />
+              </button>
+              <button
+                onClick={nextSlide}
+                className="absolute hover:cursor-pointer right-4 top-1/2 transform -translate-y-1/2 text-4xl z-50"
+              >
+                <FaGreaterThan />
+              </button>
+              <img
+                src={
+                  "https://res.cloudinary.com/ds97wytcs/" +
+                  activeProject.images[currentIndex].image_file
+                } // Access image_file
+                alt={`Slide ${currentIndex}`}
+                className="w-full max-h-[80vh] object-contain mx-auto"
+              />
+              {/* Optional: Display category instead of title, or remove if not needed */}
+              <p className="text-center mt-4 text-lg">
+                {activeProject.category}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

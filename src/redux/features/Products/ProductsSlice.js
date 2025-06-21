@@ -31,8 +31,8 @@ export const productApi = createApi({
       }),
     }),
     // get all video
-    getAllVideo: builder.query({
-      query: () => "api/woodvideos/",
+    getGallery: builder.query({
+      query: () => "api/lending-gallery/",
     }),
     sendMessage: builder.mutation({
       query: (data) => ({
@@ -50,6 +50,6 @@ export const {
   useGetCategorysAllProductQuery,
   useGetHeightOptionsQuery, // ✅ Correct
   useAiResponceMutation,
-  useGetAllVideoQuery,
   useSendMessageMutation,
+  useGetGalleryQuery,
 } = productApi;

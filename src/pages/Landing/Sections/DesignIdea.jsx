@@ -2,8 +2,39 @@ import React from "react";
 import Title from "../../../helpers/Title";
 import Button from "../../../helpers/Button";
 import VideoPlayer from "../../../helpers/VideoPlayer";
+import { useGetGalleryQuery } from "../../../redux/features/Products/ProductsSlice";
 
 export default function DesignIdea() {
+  const { data: gallery, isLoading, isError, refetch } = useGetGalleryQuery();
+
+  // Loading state UI
+  if (isLoading) {
+    return (
+      <div className="py-5 flex items-center justify-center min-h-[400px]">
+        <div className="flex flex-col items-center justify-center gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#94B316]"></div>
+          <p className="text-[#6F706A] text-lg interFont">
+            Loading inspirations...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state UI (optional, but good practice)
+  if (isError || !gallery || !gallery[0]) {
+    return (
+      <div className="py-5 flex items-center justify-center min-h-[400px]">
+        <div className="flex flex-col items-center justify-center gap-4">
+          <p className="text-[#6F706A] text-lg interFont text-center">
+            Oops, something went wrong. Please try again later.
+          </p>
+          <Button label="Retry" onClick={() => refetch()} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="py-5">
       <div className="flex items-center justify-center w-full">
@@ -29,12 +60,13 @@ export default function DesignIdea() {
           {/* Video Section */}
           <div className="mb-4">
             <VideoPlayer
-              videoSrc="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
+              videoSrc={
+                "https://res.cloudinary.com/ds97wytcs/" + gallery[0].video
+              }
               autoPlay={true}
               loop={true}
               muted={true}
               threshold={0.6}
-              poster="https://place.abh.ai/s3fs-public/2022-03/DSC_0128.JPG"
               className=""
               controlsClassName="bg-opacity-80"
             />
@@ -42,27 +74,18 @@ export default function DesignIdea() {
 
           {/* Images Section */}
           <div className="grid grid-cols-3 gap-2">
-            <div className="aspect-square overflow-hidden rounded-lg">
-              <img
-                src="/gl/gl1.png"
-                alt="Image 1"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="aspect-square overflow-hidden rounded-lg">
-              <img
-                src="/gl/gl2.png"
-                alt="Image 2"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="aspect-square overflow-hidden rounded-lg">
-              <img
-                src="/gl/gl3.png"
-                alt="Image 3"
-                className="w-full h-full object-cover"
-              />
-            </div>
+            {gallery[0].images.map((img, index) => (
+              <div
+                key={index}
+                className="aspect-square overflow-hidden rounded-lg"
+              >
+                <img
+                  src={"https://res.cloudinary.com/ds97wytcs/" + img.image_file}
+                  alt={`Gallery image ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ))}
           </div>
         </div>
 
