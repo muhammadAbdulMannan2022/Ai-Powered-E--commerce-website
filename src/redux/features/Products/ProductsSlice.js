@@ -34,6 +34,13 @@ export const productApi = createApi({
     getAllVideo: builder.query({
       query: () => "api/woodvideos/",
     }),
+    sendMessage: builder.mutation({
+      query: (data) => ({
+        url: "api/contact-form-submit/",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -44,4 +51,5 @@ export const {
   useGetHeightOptionsQuery, // ✅ Correct
   useAiResponceMutation,
   useGetAllVideoQuery,
+  useSendMessageMutation,
 } = productApi;

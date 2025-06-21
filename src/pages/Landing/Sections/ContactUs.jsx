@@ -1,11 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
 import { MapPin, Mail, Phone } from "lucide-react";
 import Title from "../../../helpers/Title";
+import { useSendMessageMutation } from "../../../redux/features/Products/ProductsSlice";
+import toast, { Toaster } from "react-hot-toast";
 
-// Mock Title component since the import path might be different
 export default function ContactSection() {
+  // State to manage form inputs
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [sendMessage, { isLoading }] = useSendMessageMutation();
+  const [formStatus, setFormStatus] = useState(null); // For success/error messages
+
+  // Handle input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await sendMessage(formData).unwrap(); // Send the form data to the backend
+      setFormStatus("success");
+      // Reset form on successful submission
+      setFormData({ name: "", email: "", subject: "", message: "" });
+      // Optionally clear success message after a delay
+      setTimeout(() => setFormStatus(null), 3000);
+      toast.success("Your message has been sent successfully!");
+    } catch (err) {
+      setFormStatus("error");
+      console.error("Failed to send message:", err);
+    }
+  };
+
   return (
     <div className="bg-gray-100 py-10">
+      <Toaster />
       <div className="flex items-center justify-center flex-col px-4">
         <Title
           title={
@@ -30,7 +65,6 @@ export default function ContactSection() {
               <div className="p-8 xl:p-16 flex items-center h-full">
                 <div className="max-w-md">
                   <div className="space-y-8">
-                    {/* Address */}
                     <div className="flex items-start space-x-4">
                       <div className="bg-[#a4be39] p-3 rounded-full flex-shrink-0">
                         <MapPin className="w-6 h-6 text-white" />
@@ -43,8 +77,6 @@ export default function ContactSection() {
                         </p>
                       </div>
                     </div>
-
-                    {/* Email */}
                     <div className="flex items-center space-x-4">
                       <div className="bg-[#a4be39] p-3 rounded-full flex-shrink-0">
                         <Mail className="w-6 h-6 text-white" />
@@ -55,8 +87,6 @@ export default function ContactSection() {
                         </p>
                       </div>
                     </div>
-
-                    {/* Phone */}
                     <div className="flex items-center space-x-4">
                       <div className="bg-[#a4be39] p-3 rounded-full flex-shrink-0">
                         <Phone className="w-6 h-6 text-white" />
@@ -83,21 +113,29 @@ export default function ContactSection() {
                     </h3>
                   </div>
 
-                  <form className="space-y-4">
+                  <form className="space-y-4" onSubmit={handleSubmit}>
                     {/* Name and Email Row */}
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <input
                           type="text"
+                          name="name"
                           placeholder="Name"
+                          value={formData.name}
+                          onChange={handleInputChange}
                           className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a4be39] focus:border-transparent bg-[#f7f9e8] transition-all duration-200"
+                          required
                         />
                       </div>
                       <div>
                         <input
                           type="email"
+                          name="email"
                           placeholder="Email"
+                          value={formData.email}
+                          onChange={handleInputChange}
                           className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a4be39] focus:border-transparent bg-[#f7f9e8] transition-all duration-200"
+                          required
                         />
                       </div>
                     </div>
@@ -106,7 +144,10 @@ export default function ContactSection() {
                     <div>
                       <input
                         type="text"
+                        name="subject"
                         placeholder="Subject (Optional)"
+                        value={formData.subject}
+                        onChange={handleInputChange}
                         className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a4be39] focus:border-transparent bg-[#f7f9e8] transition-all duration-200"
                       />
                     </div>
@@ -114,19 +155,36 @@ export default function ContactSection() {
                     {/* Message */}
                     <div>
                       <textarea
+                        name="message"
                         placeholder="Write message"
                         rows={4}
+                        value={formData.message}
+                        onChange={handleInputChange}
                         className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a4be39] focus:border-transparent bg-[#f7f9e8] resize-none transition-all duration-200"
+                        required
                       ></textarea>
                     </div>
+
+                    {/* Form Status */}
+                    {formStatus === "success" && (
+                      <p className="text-green-600 text-sm">
+                        Message sent successfully!
+                      </p>
+                    )}
+                    {formStatus === "error" && (
+                      <p className="text-red-600 text-sm">
+                        Failed to send message. Please try again.
+                      </p>
+                    )}
 
                     {/* Submit Button */}
                     <div>
                       <button
                         type="submit"
-                        className="w-full bg-[#a4be39] hover:bg-[#8ca830] text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                        className="w-full hover:cursor-pointer bg-[#a4be39] hover:bg-[#8ca830] text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                        disabled={isLoading}
                       >
-                        Send
+                        {isLoading ? "Sending..." : "Send"}
                       </button>
                     </div>
                   </form>
@@ -143,7 +201,6 @@ export default function ContactSection() {
           {/* Contact Information Section - Full Width */}
           <div className="bg-[#F5F8E8] rounded-2xl p-6 md:p-8">
             <div className="space-y-6">
-              {/* Address */}
               <div className="flex items-start space-x-4">
                 <div className="bg-[#a4be39] p-3 rounded-full flex-shrink-0">
                   <MapPin className="w-6 h-6 text-white" />
@@ -156,8 +213,6 @@ export default function ContactSection() {
                   </p>
                 </div>
               </div>
-
-              {/* Email */}
               <div className="flex items-center space-x-4">
                 <div className="bg-[#a4be39] p-3 rounded-full flex-shrink-0">
                   <Mail className="w-6 h-6 text-white" />
@@ -168,8 +223,6 @@ export default function ContactSection() {
                   </p>
                 </div>
               </div>
-
-              {/* Phone */}
               <div className="flex items-center space-x-4">
                 <div className="bg-[#a4be39] p-3 rounded-full flex-shrink-0">
                   <Phone className="w-6 h-6 text-white" />
@@ -192,21 +245,29 @@ export default function ContactSection() {
               <h3 className="text-xl md:text-2xl font-bold">Send A Quest</h3>
             </div>
 
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               {/* Name and Email Row */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <input
                     type="text"
+                    name="name"
                     placeholder="Name"
+                    value={formData.name}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a4be39] focus:border-transparent bg-[#f7f9e8] transition-all duration-200"
+                    required
                   />
                 </div>
                 <div>
                   <input
                     type="email"
+                    name="email"
                     placeholder="Email"
+                    value={formData.email}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a4be39] focus:border-transparent bg-[#f7f9e8] transition-all duration-200"
+                    required
                   />
                 </div>
               </div>
@@ -215,7 +276,10 @@ export default function ContactSection() {
               <div>
                 <input
                   type="text"
+                  name="subject"
                   placeholder="Subject (Optional)"
+                  value={formData.subject}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a4be39] focus:border-transparent bg-[#f7f9e8] transition-all duration-200"
                 />
               </div>
@@ -223,19 +287,36 @@ export default function ContactSection() {
               {/* Message */}
               <div>
                 <textarea
+                  name="message"
                   placeholder="Write message"
                   rows={5}
+                  value={formData.message}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a4be39] focus:border-transparent bg-[#f7f9e8] resize-none transition-all duration-200"
+                  required
                 ></textarea>
               </div>
+
+              {/* Form Status */}
+              {formStatus === "success" && (
+                <p className="text-green-600 text-sm">
+                  Message sent successfully!
+                </p>
+              )}
+              {formStatus === "error" && (
+                <p className="text-red-600 text-sm">
+                  Failed to send message. Please try again.
+                </p>
+              )}
 
               {/* Submit Button */}
               <div>
                 <button
                   type="submit"
                   className="w-full bg-[#a4be39] hover:bg-[#8ca830] text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  disabled={isLoading}
                 >
-                  Send
+                  {isLoading ? "Sending..." : "Send"}
                 </button>
               </div>
             </form>
