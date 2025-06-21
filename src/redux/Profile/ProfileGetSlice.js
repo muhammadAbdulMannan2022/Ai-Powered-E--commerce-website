@@ -90,6 +90,14 @@ export const profileApi = createApi({
     allComplitedOrder: builder.query({
       query: () => "api/orders/",
     }),
+    // give review
+    giveReview: builder.mutation({
+      query: (data) => ({
+        url: `api/user_review/${data.orderId}/`,
+        method: "POST",
+        body: data.review,
+      }),
+    }),
   }),
 });
 
@@ -112,4 +120,6 @@ export const {
   useRecientViewsMutation,
   // get all success order
   useAllComplitedOrderQuery,
+  // for post review
+  useGiveReviewMutation,
 } = profileApi;

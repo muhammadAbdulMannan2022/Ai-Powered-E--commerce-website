@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useAllComplitedOrderQuery } from "../../redux/Profile/ProfileGetSlice";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import ReviewModal from "./ReviewModal";
 
 // Function to format date as MM/dd/yyyy
 const formatDate = (dateString) => {
@@ -15,6 +16,8 @@ const formatDate = (dateString) => {
 export default function OrderHistory() {
   const { data: orders, isLoading, error } = useAllComplitedOrderQuery();
   const [expandedOrder, setExpandedOrder] = useState(null); // Track expanded order for mobile view
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
+  const [itemId, setItemId] = useState("");
   const navigate = useNavigate(); // Initialize navigate hook
 
   const toggleOrderDetails = (orderId) => {
@@ -77,7 +80,20 @@ export default function OrderHistory() {
                     {formatDate(order.created_at)}
                   </td>
                   <td className="border border-gray-300 p-2 text-sm sm:text-base">
-                    {order.status}
+                    <div className="flex items-center flex-col">
+                      <span>{order.status}</span>
+                      {order.status === "Delivered" && !order.user_review && (
+                        <button
+                          onClick={() => {
+                            setIsReviewOpen(true);
+                            setItemId(order.id);
+                          }}
+                          className="text-blue-400 underline hover:cursor-pointer"
+                        >
+                          Give review
+                        </button>
+                      )}
+                    </div>
                   </td>
                   <td className="hidden sm:table-cell border border-gray-300 p-2 text-sm sm:text-base">
                     <ul className="list-disc list-inside">
@@ -127,6 +143,11 @@ export default function OrderHistory() {
           </tbody>
         </table>
       </div>
+      <ReviewModal
+        isOpen={isReviewOpen}
+        onClose={() => setIsReviewOpen(false)}
+        orderId={itemId}
+      />
     </div>
   );
 }
