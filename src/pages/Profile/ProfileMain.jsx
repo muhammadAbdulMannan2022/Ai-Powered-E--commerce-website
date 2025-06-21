@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Edit, Mail } from "lucide-react";
 import Input from "../../helpers/Input";
 import Select from "./Select";
+import { FiLogOut } from "react-icons/fi";
 import {
   useGetProfileQuery,
   useUpdateProfileMutation,
@@ -12,11 +13,12 @@ import {
   useEmailOtpVerifyMutation,
 } from "../../redux/Profile/ProfileGetSlice";
 import { setProfile } from "../../redux/Profile/ProfileSlice";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 export default function ProfilePage() {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.profile.profile);
+  const navigate = useNavigate();
 
   const {
     data: profileData,
@@ -199,6 +201,13 @@ export default function ProfilePage() {
     if (pastedData.length > 0) {
       otpInputs.current[Math.min(pastedData.length, 3)].focus();
     }
+  };
+
+  const logOut = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user_email");
+    navigate("/");
   };
 
   const genderOptions = [
@@ -403,6 +412,15 @@ export default function ProfilePage() {
                 </div>
               )}
             </div>
+          </div>
+          <div>
+            <button
+              onClick={logOut}
+              className="flex items-center gap-2 bg-[#90A53A] text-white px-6 py-2 rounded-md hover:bg-[#7a8f32] hover:cursor-pointer transition-colors mb-6 focus:outline-none focus:ring-2 focus:ring-[#90A53A] focus:ring-offset-2"
+            >
+              <FiLogOut className="w-5 h-5" />
+              Logout
+            </button>
           </div>
         </div>
       </div>

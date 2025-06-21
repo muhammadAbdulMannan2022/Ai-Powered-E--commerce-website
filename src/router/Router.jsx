@@ -19,6 +19,7 @@ import CartHome from "../pages/Cart/CartHome";
 import Profile from "../pages/Profile/Profile";
 import ProfilePage from "../pages/Profile/ProfileMain";
 import OrderHistory from "../pages/Profile/OrderHistory";
+import UserOnly from "../Private/UserOnly";
 
 const router = createBrowserRouter([
   {
@@ -65,13 +66,21 @@ const router = createBrowserRouter([
       },
       {
         path: "/cart",
-        element: <CartHome />,
+        element: (
+          <UserOnly>
+            <CartHome />
+          </UserOnly>
+        ),
       },
     ],
   },
   {
     path: "/profile",
-    element: <Profile />,
+    element: (
+      <UserOnly>
+        <Profile />
+      </UserOnly>
+    ),
     children: [
       {
         path: "",

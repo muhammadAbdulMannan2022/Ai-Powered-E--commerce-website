@@ -9,7 +9,7 @@ export default function Profile() {
     <div>
       <TopBar />
       <Navbar />
-      <div>
+      <div className="h-full">
         <div className="w-full h-20 bg-gradient-to-r from-[#99BA14] to-[#233205] "></div>
         <Outlet />
       </div>

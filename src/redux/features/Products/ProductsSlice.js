@@ -41,6 +41,9 @@ export const productApi = createApi({
         body: data,
       }),
     }),
+    getFaq: builder.query({
+      query: () => "faqs/",
+    }),
   }),
 });
 
@@ -52,4 +55,5 @@ export const {
   useAiResponceMutation,
   useSendMessageMutation,
   useGetGalleryQuery,
+  useGetFaqQuery,
 } = productApi;
