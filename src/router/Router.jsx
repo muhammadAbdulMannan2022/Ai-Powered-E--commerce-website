@@ -17,6 +17,8 @@ import Policy from "../pages/policy/Policy";
 import Cart from "../pages/Cart/Cart";
 import CartHome from "../pages/Cart/CartHome";
 import Profile from "../pages/Profile/Profile";
+import ProfilePage from "../pages/Profile/ProfileMain";
+import OrderHistory from "../pages/Profile/OrderHistory";
 
 const router = createBrowserRouter([
   {
@@ -70,6 +72,16 @@ const router = createBrowserRouter([
   {
     path: "/profile",
     element: <Profile />,
+    children: [
+      {
+        path: "",
+        element: <ProfilePage />,
+      },
+      {
+        path: "orders",
+        element: <OrderHistory />,
+      },
+    ],
   },
   {
     path: "/login",

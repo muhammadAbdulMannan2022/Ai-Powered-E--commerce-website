@@ -30,6 +30,10 @@ export const productApi = createApi({
         body: data,
       }),
     }),
+    // get all video
+    getAllVideo: builder.query({
+      query: () => "api/woodvideos/",
+    }),
   }),
 });
 
@@ -39,4 +43,5 @@ export const {
   useGetCategorysAllProductQuery,
   useGetHeightOptionsQuery, // ✅ Correct
   useAiResponceMutation,
+  useGetAllVideoQuery,
 } = productApi;

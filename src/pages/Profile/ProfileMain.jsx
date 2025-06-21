@@ -12,6 +12,7 @@ import {
   useEmailOtpVerifyMutation,
 } from "../../redux/Profile/ProfileGetSlice";
 import { setProfile } from "../../redux/Profile/ProfileSlice";
+import { Link } from "react-router";
 
 export default function ProfilePage() {
   const dispatch = useDispatch();
@@ -222,7 +223,7 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 sm:px-6 py-8 lg:px-40">
+    <div className=" bg-gray-50 px-4 sm:px-6 py-8 lg:px-40">
       <div className="p-6">
         <div className="flex flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-4">
@@ -320,9 +321,17 @@ export default function ProfilePage() {
           )}
 
           <div className="border-t border-gray-200 pt-6">
-            <h2 className="text-lg sm:text-xl font-medium text-gray-800 mb-4">
-              My Email Address
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg sm:text-xl font-medium text-gray-800 mb-4">
+                My Email Address
+              </h2>
+              <Link
+                to={"/profile/orders"}
+                className="text-white font-medium transition-colors text-sm sm:text-base bg-[#90A53A] py-2 rounded-full hover:cursor-pointer px-3"
+              >
+                View orders
+              </Link>
+            </div>
             <div className="rounded-md p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               {!isUpdatingEmail ? (
                 <div className="flex flex-col gap-4">

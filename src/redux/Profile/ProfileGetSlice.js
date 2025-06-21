@@ -78,6 +78,18 @@ export const profileApi = createApi({
     getAllOrderDetails: builder.query({
       query: () => `api/orders/`,
     }),
+    // recent-views
+    recientViews: builder.mutation({
+      query: (woodId) => ({
+        url: "api/recent-views/",
+        method: "POST",
+        body: woodId,
+      }),
+    }),
+    // all success order
+    allComplitedOrder: builder.query({
+      query: () => "api/orders/",
+    }),
   }),
 });
 
@@ -96,4 +108,8 @@ export const {
   // success
   useGetOrderDetailsQuery,
   useGetAllOrderDetailsQuery,
+  //add to recent
+  useRecientViewsMutation,
+  // get all success order
+  useAllComplitedOrderQuery,
 } = profileApi;
