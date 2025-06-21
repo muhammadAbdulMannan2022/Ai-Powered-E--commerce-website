@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { X, Send, Bot } from "lucide-react";
 import { MdOutlineSupportAgent } from "react-icons/md";
 import { useAiResponceMutation } from "../../redux/features/Products/ProductsSlice";
+import ReactMarkdown from "react-markdown"; // Import react-markdown
+import remarkGfm from "remark-gfm"; // Optional: for GitHub Flavored Markdown
 
 export default function ChatInterface({ isOpen, setIsAiChatOpen }) {
   const [messages, setMessages] = useState([
@@ -118,11 +120,13 @@ export default function ChatInterface({ isOpen, setIsAiChatOpen }) {
                   : "bg-white text-gray-800 rounded-bl-none shadow-sm"
               }`}
             >
-              {message.text}
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {message.text}
+              </ReactMarkdown>
               <div
                 className={`text-xs ${
-                  message.sender == "user" ? "text-[#eeecec]" : "text-gray-400"
-                }  mt-1`}
+                  message.sender === "user" ? "text-[#eeecec]" : "text-gray-400"
+                } mt-1`}
               >
                 {new Date(message.timestamp).toLocaleTimeString([], {
                   hour: "2-digit",
@@ -144,10 +148,10 @@ export default function ChatInterface({ isOpen, setIsAiChatOpen }) {
               <Bot size={20} className="text-white" />
             </div>
             <div className="max-w-[75%] p-3 rounded-lg bg-white text-gray-800 rounded-bl-none shadow-sm">
-              <div class="flex space-x-1 text-4xl font-bold text-gray-800">
-                <span class="animate-bounce [animation-delay:0s]">.</span>
-                <span class="animate-bounce [animation-delay:0.2s]">.</span>
-                <span class="animate-bounce [animation-delay:0.4s]">.</span>
+              <div className="flex space-x-1 text-4xl font-bold text-gray-800">
+                <span className="animate-bounce [animation-delay:0s]">.</span>
+                <span className="animate-bounce [animation-delay:0.2s]">.</span>
+                <span className="animate-bounce [animation-delay:0.4s]">.</span>
               </div>
             </div>
           </div>
@@ -167,7 +171,7 @@ export default function ChatInterface({ isOpen, setIsAiChatOpen }) {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Type your message..."
+            placeholder="Type your message "
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#94B316] focus:border-transparent text-sm resize-none h-10 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
             rows={1}
           />
