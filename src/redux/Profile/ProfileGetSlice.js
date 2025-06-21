@@ -72,6 +72,12 @@ export const profileApi = createApi({
         body: checkoutData,
       }),
     }),
+    getOrderDetails: builder.query({
+      query: (id) => `api/orders/${id}/`,
+    }),
+    getAllOrderDetails: builder.query({
+      query: () => `api/orders/`,
+    }),
   }),
 });
 
@@ -87,4 +93,7 @@ export const {
   useUpdateCartItemDataMutation,
   useRemoveCartItemMutation,
   useCheckoutMutation,
+  // success
+  useGetOrderDetailsQuery,
+  useGetAllOrderDetailsQuery,
 } = profileApi;

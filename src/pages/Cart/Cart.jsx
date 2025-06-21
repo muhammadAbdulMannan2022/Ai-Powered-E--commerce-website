@@ -233,9 +233,9 @@ export default function CartPage({ currentStep, setCurrentStep }) {
       });
 
       if (discrepancies.length > 0) {
-        setErrorMessage(
-          "Cart has changed (e.g., stock or price updates). Please review and try again."
-        );
+        // setErrorMessage(
+        //   "Cart has changed (e.g., stock or price updates). Please review and try again."
+        // );
         setLocalCartItems(
           latestCart.map((item) => {
             const unitPriceNum = parseFloat(item.unit_price) || 0;
