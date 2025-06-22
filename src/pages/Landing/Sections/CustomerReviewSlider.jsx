@@ -4,71 +4,29 @@ import { useState, useEffect } from "react";
 import { FaStar } from "react-icons/fa";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Title from "../../../helpers/Title";
+import { useGetReviewsQuery } from "../../../redux/features/Products/ProductsSlice";
 
 export default function CustomerReviewSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [reviews] = useState([
-    {
-      id: 1,
-      rating: 5,
-      text: "Lorem ipsum dolor sit amet consectetur. Sagittis ornare vitae pellentesque amet est massa. Phasellus interdum non eget amet nisl non. Morbi posuere integer mollis aliquam fermentum odio vitae. Sociis porta commodo pellentesque rhoncus habitant. Sit amet nisl fermentum",
-      author: {
-        name: "Saint Thomas",
-        title: "Web Developer",
-        avatar: "/rv1.jpg",
-      },
-    },
-    {
-      id: 2,
-      rating: 5,
-      text: "Lorem ipsum dolor sit amet consectetur. Sagittis ornare vitae pellentesque amet est massa. Phasellus interdum non eget amet nisl non. Morbi posuere integer mollis aliquam fermentum odio vitae. Sociis porta commodo pellentesque rhoncus habitant. Sit amet nisl fermentum",
-      author: {
-        name: "Mikel Jack",
-        title: "Web Designer",
-        avatar: "/rv2.jpg",
-      },
-    },
-    {
-      id: 3,
-      rating: 5,
-      text: "Exceptional service and outstanding results! The team exceeded our expectations and delivered exactly what we needed. Highly recommend their professional approach and attention to detail.",
-      author: {
-        name: "Sarah Johnson",
-        title: "Marketing Manager",
-        avatar: "/rv2.jpg",
-      },
-    },
-    {
-      id: 4,
-      rating: 4,
-      text: "Great experience working with this team. They were responsive, creative, and delivered on time. The final product was exactly what we envisioned for our brand.",
-      author: {
-        name: "David Chen",
-        title: "Product Manager",
-        avatar: "/rv1.jpg",
-      },
-    },
-    {
-      id: 4,
-      rating: 3,
-      text: "Exceptional service and outstanding results! The team exceeded our expectations and delivered exactly what we needed. Highly recommend their professional approach and attention to detail.",
-      author: {
-        name: "Sarah Johnson",
-        title: "Marketing Manager",
-        avatar: "/rv2.jpg",
-      },
-    },
-    {
-      id: 5,
-      rating: 4,
-      text: "Great experience working with this team. They were responsive, creative, and delivered on time. The final product was exactly what we envisioned for our brand.",
-      author: {
-        name: "David Chen",
-        title: "Product Manager",
-        avatar: "/rv1.jpg",
-      },
-    },
-  ]);
+  const { data: reviewsData, isLoading, isError } = useGetReviewsQuery(); // Fetch reviews using the query hook
+  const [reviews, setReviews] = useState([]);
+
+  // Map fetched data to the component's expected format
+  useEffect(() => {
+    if (reviewsData) {
+      const formattedReviews = reviewsData.map((review) => ({
+        id: review.order_number,
+        rating: review.stars,
+        text: review.comment,
+        author: {
+          name: review.full_name,
+          title: "Customer", // Placeholder since title isn't provided in the API data
+          avatar: review.user_image,
+        },
+      }));
+      setReviews(formattedReviews);
+    }
+  }, [reviewsData]);
 
   const reviewsPerSlide = 2;
   const totalSlides = Math.ceil(reviews.length / reviewsPerSlide);
@@ -88,7 +46,7 @@ export default function CustomerReviewSlider() {
   useEffect(() => {
     const interval = setInterval(nextSlide, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [totalSlides]); // Update dependency to totalSlides to reflect changes in reviews length
 
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, index) => (
@@ -101,6 +59,31 @@ export default function CustomerReviewSlider() {
     ));
   };
 
+  // Handle loading and error states
+  if (isLoading) {
+    return (
+      <div className="max-w-6xl mx-auto p-6 bg-white text-center">
+        <p>Loading reviews...</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="max-w-6xl mx-auto p-6 bg-white text-center">
+        <p>Error loading reviews. Please try again later.</p>
+      </div>
+    );
+  }
+
+  if (reviews.length === 0) {
+    return (
+      <div className="max-w-6xl mx-auto p-6 bg-white text-center">
+        <p>No reviews available.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white">
       {/* Header */}
@@ -108,12 +91,10 @@ export default function CustomerReviewSlider() {
         <Title
           title={
             <>
-              {" "}
               Customer <span className="text-[#94B316]">Review</span>
             </>
           }
         />
-
         {/* Navigation Arrows */}
         <div className="flex items-center gap-2">
           <button
@@ -157,13 +138,11 @@ export default function CustomerReviewSlider() {
                         <div className="flex items-center gap-1 mb-4">
                           {renderStars(review.rating)}
                         </div>
-
                         {/* Review Text */}
                         <p className="text-gray-600 text-sm leading-relaxed mb-6">
                           {review.text}
                         </p>
                       </div>
-
                       {/* Author Info */}
                       <div className="flex items-center gap-3">
                         <img

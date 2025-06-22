@@ -44,6 +44,9 @@ export const productApi = createApi({
     getFaq: builder.query({
       query: () => "faqs/",
     }),
+    getReviews: builder.query({
+      query: () => "api/reviews/paid-orders/",
+    }),
   }),
 });
 
@@ -56,4 +59,5 @@ export const {
   useSendMessageMutation,
   useGetGalleryQuery,
   useGetFaqQuery,
+  useGetReviewsQuery,
 } = productApi;
