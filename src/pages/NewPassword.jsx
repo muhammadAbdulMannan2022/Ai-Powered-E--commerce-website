@@ -1,39 +1,67 @@
 import { useState } from "react";
 import { IoArrowBack, IoShieldCheckmarkSharp } from "react-icons/io5";
 import Input from "../helpers/Input";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import { useResetPasswordMutation } from "../redux/features/auth/AuthSlice";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function NewPassword() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(""); // For error display
   const navigate = useNavigate();
+  const location = useLocation();
+  const { email } = location.state || {}; // Safely destructure email
 
-  const handleSubmit = (e) => {
+  // Initialize the mutation hook
+  const [resetPassword, { loading }] = useResetPasswordMutation();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log(email);
     // Validate inputs
     if (!newPassword || !confirmPassword) {
-      alert("Please fill in both password fields.");
+      setErrorMessage("Please fill in both password fields.");
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      alert("Passwords do not match.");
+      setErrorMessage("Passwords do not match.");
       return;
     }
 
-    // Submit logic
-    console.log("New password:", newPassword);
-    console.log("Confirm password:", confirmPassword);
-    console.log("Remember me:", rememberMe);
+    if (!email) {
+      setErrorMessage("Email is missing. Please try the reset process again.");
+      return;
+    }
 
-    navigate("/");
+    try {
+      // Send mutation with required data format
+      const { data } = await resetPassword({
+        email,
+        password: newPassword,
+      });
+
+      // Handle success (adjust based on your mutation response)
+      if (data?.message) {
+        toast.success("Password reset successfully!");
+        navigate("/login");
+      } else {
+        setErrorMessage(
+          data?.resetPassword?.message || "Password reset failed."
+        );
+      }
+    } catch (error) {
+      // Handle network or server errors
+      setErrorMessage(error.message || "An error occurred. Please try again.");
+    }
   };
 
   return (
     <div className="w-full min-h-screen bg-[#f8fbed] flex items-center justify-center relative px-4 py-8">
       {/* Back Button */}
+      <Toaster />
       <button
         type="button"
         onClick={() => navigate("/login")}
@@ -51,10 +79,17 @@ export default function NewPassword() {
         <div className="flex flex-col items-center text-[#94B316] mb-6 text-center">
           <IoShieldCheckmarkSharp className="text-6xl md:text-8xl mb-2" />
           <h1 className="text-[#90A53A] text-2xl md:text-4xl font-bold mb-2">
-            Hi Devid
+            Hello
           </h1>
           <p className="text-[#53640F] text-base md:text-lg">Welcome Back!</p>
         </div>
+
+        {/* Error Message */}
+        {errorMessage && (
+          <div className="w-full mb-4 text-red-500 text-center">
+            {errorMessage}
+          </div>
+        )}
 
         {/* Input Fields */}
         <div className="w-full">
@@ -89,9 +124,12 @@ export default function NewPassword() {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full py-2 mt-6 bg-[#94B316] text-white font-semibold rounded-full hover:bg-[#94b316e7] transition"
+          disabled={loading}
+          className={`w-full py-2 mt-6 bg-[#94B316] text-white font-semibold rounded-full hover:bg-[#94b316e7] transition ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
-          Done
+          {loading ? "Processing..." : "Done"}
         </button>
       </form>
     </div>

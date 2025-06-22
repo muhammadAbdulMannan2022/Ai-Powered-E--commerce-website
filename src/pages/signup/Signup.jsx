@@ -73,18 +73,16 @@ export default function Signup() {
         password,
       }).unwrap();
 
-      localStorage.setItem("access_token", res.access);
-      localStorage.setItem("refresh_token", res.refresh);
-      localStorage.setItem("user_email", res.profile_data.user);
-
-      dispatch(setProfile(res.profile_data));
+      // dispatch(setProfile(res?.profile_data));
 
       navigate("/verify-mail", {
-        state: { from: "signup" },
+        state: { from: "signup", email: email },
       });
     } catch (err) {
       const backendError =
-        err?.data?.message || "Signup failed. Please try again later.";
+        err?.data?.message ||
+        err?.message ||
+        "Signup failed. Please try again later.";
       setFormError(backendError);
     }
   };

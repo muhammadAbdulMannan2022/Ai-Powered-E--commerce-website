@@ -2,21 +2,56 @@ import { useState } from "react";
 import { GiMailbox } from "react-icons/gi";
 import { IoArrowBack } from "react-icons/io5";
 import Input from "../helpers/Input";
-import { useNavigate } from "react-router"; // If using React Router
+import { useNavigate } from "react-router";
+import { useForgotPasswordMutation } from "../redux/features/auth/AuthSlice";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const navigate = useNavigate(); // Use only if you're using react-router
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+  const navigate = useNavigate();
+
+  // Initialize the mutation hook
+  const [forgotPassword, { loading }] = useForgotPasswordMutation();
 
   const handleChange = (e) => {
     setEmail(e.target.value);
+    setErrorMsg(""); // Clear error on input change
+    setSuccessMsg(""); // Clear success message on input change
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Forgot Password submitted:", email);
 
-    navigate("/verify-mail", { state: { email } }); // Navigate to VerifyMail with email state
+    if (!email) {
+      setErrorMsg("Please enter a valid email address.");
+      return;
+    }
+
+    try {
+      const response = await forgotPassword({
+        email: email,
+      });
+
+      // Check if the mutation was successful
+      if (response.data?.message) {
+        setSuccessMsg("A reset PIN has been sent to your email.");
+        setEmail(""); // Clear the input
+        // Navigate to VerifyMail after a short delay to show success message
+        setTimeout(() => {
+          navigate("/verify-mail", { state: { email } });
+        }, 2000);
+      } else {
+        setErrorMsg(
+          response.data?.forgotPassword?.message || "Something went wrong."
+        );
+      }
+    } catch (err) {
+      // Handle network or other errors
+      setErrorMsg(
+        err.message || "Failed to send reset email. Please try again."
+      );
+    }
   };
 
   return (
@@ -24,7 +59,7 @@ export default function ForgotPassword() {
       {/* Back Button */}
       <button
         type="button"
-        onClick={() => navigate("/login")} // or use window.location.href = "/login";
+        onClick={() => navigate("/login")}
         className="absolute top-4 left-4 text-[#94B316] text-2xl hover:scale-110 transition"
       >
         <IoArrowBack />
@@ -46,6 +81,18 @@ export default function ForgotPassword() {
           </p>
         </div>
 
+        {/* Messages */}
+        {errorMsg && (
+          <p className="w-full text-red-500 text-sm mb-4 text-center">
+            {errorMsg}
+          </p>
+        )}
+        {successMsg && (
+          <p className="w-full text-green-500 text-sm mb-4 text-center">
+            {successMsg}
+          </p>
+        )}
+
         {/* Input */}
         <div className="w-full">
           <Input
@@ -55,15 +102,19 @@ export default function ForgotPassword() {
             placeholder="example@gmail.com"
             value={email}
             onChange={handleChange}
+            disabled={loading} // Disable input during loading
           />
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full py-2 mt-4 bg-[#94B316] text-white font-semibold rounded-full hover:bg-[#94b316e7] transition"
+          className={`w-full py-2 mt-4 bg-[#94B316] text-white font-semibold rounded-full transition ${
+            loading ? "opacity-50 cursor-not-allowed" : "hover:bg-[#94b316e7]"
+          }`}
+          disabled={loading} // Disable button during loading
         >
-          Send Mail
+          {loading ? "Sending..." : "Send Mail"}
         </button>
       </form>
     </div>

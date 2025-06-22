@@ -1,7 +1,7 @@
 // features/auth/authApi.js
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const BASE_URL = "https://endlessly-unified-guppy.ngrok-free.app/";
+const BASE_URL = "https://endlessly-unified-guppy.ngrok-free.app";
 
 export const authApi = createApi({
   reducerPath: "authApi",
@@ -35,7 +35,7 @@ export const authApi = createApi({
       query: (email) => ({
         url: "/auth/forgot-password/",
         method: "POST",
-        body: { email },
+        body: email,
       }),
     }),
     verifyOtp: builder.mutation({
@@ -54,11 +54,19 @@ export const authApi = createApi({
     }),
     resetPassword: builder.mutation({
       query: (newData) => ({
-        url: "/auth/reset-password",
+        url: "/auth/reset-password/",
         method: "POST",
         body: newData,
       }),
     }),
+    resetPasswordOtp: builder.mutation({
+      query: (otpData) => ({
+        url: "/auth/forgot-password-verify-otp/",
+        method: "POST",
+        body: otpData,
+      }),
+    }),
+
     changeEmail: builder.mutation({
       query: (newMail) => ({
         url: "/auth/email-change-request/",
@@ -84,6 +92,7 @@ export const {
   useVerifyOtpMutation,
   useReSendOtpMutation,
   useResetPasswordMutation,
+  useResetPasswordOtpMutation,
   //
   useChangeEmailMutation,
   useVerifyChangeEmailMutation,

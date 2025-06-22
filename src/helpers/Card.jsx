@@ -13,6 +13,7 @@ const Card = ({
   image_url,
   altText = "Product image",
   slug,
+  color_images,
 }) => {
   const [addRecent, { isError }] = useRecientViewsMutation();
   const token = localStorage.getItem("access_token");
@@ -27,7 +28,7 @@ const Card = ({
     <div className="w-[90%] sm:w-[85%] md:w-[90%] lg:w-[95%] xl:w-[90%] max-w-sm border border-gray-200 rounded-xl overflow-hidden bg-white shadow-md flex flex-col interFont">
       <div className="relative h-48 md:h-56 w-full">
         <img
-          src={image_url || "/placeholder.svg"}
+          src={image_url || color_images[0].image_url || "/placeholder.svg"}
           alt={altText}
           className="w-full h-full object-cover"
         />
