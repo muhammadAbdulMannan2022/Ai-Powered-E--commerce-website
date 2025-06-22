@@ -238,7 +238,10 @@ export default function ProfilePage() {
           <div className="flex items-center space-x-4">
             <div className="relative group">
               <img
-                src={previewImage || "/profile.png"}
+                src={
+                  "https://res.cloudinary.com/ds97wytcs/" + previewImage ||
+                  "/profile.png"
+                }
                 alt="Profile"
                 className="w-20 h-20 rounded-full object-cover border border-[#90a53a9f]"
               />

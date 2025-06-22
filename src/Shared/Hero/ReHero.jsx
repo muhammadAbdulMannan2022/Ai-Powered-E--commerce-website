@@ -68,18 +68,28 @@ const ReHero = ({
           </div>
         </div>
         <div
-          onClick={() => setIsAiChatOpen(true)}
-          className="absolute bottom-[-15px] right-3 md:right-32 bg-[#94B316] text-white text-3xl p-1 rounded-full hover:cursor-pointer"
+          onClick={() => {
+            setIsAiChatOpen(true);
+            console.log("agent");
+          }}
+          className="absolute z-40 bottom-[-15px] right-3 md:right-32 bg-[#94B316] text-white text-3xl p-1 rounded-full hover:cursor-pointer"
         >
-          <MdOutlineSupportAgent />
+          <MdOutlineSupportAgent
+            onClick={() => {
+              setIsAiChatOpen(true);
+              console.log("agent");
+            }}
+          />
         </div>
       </div>
-      <div className="z-[1000]">
-        <ChatInterface
-          isOpen={isAiChatOpen}
-          setIsAiChatOpen={setIsAiChatOpen}
-        />
-      </div>
+      {isAiChatOpen && (
+        <div className="z-[1000]">
+          <ChatInterface
+            isOpen={isAiChatOpen}
+            setIsAiChatOpen={setIsAiChatOpen}
+          />
+        </div>
+      )}
     </>
   );
 };
