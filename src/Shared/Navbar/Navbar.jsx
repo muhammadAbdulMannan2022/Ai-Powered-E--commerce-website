@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   FaBars,
   FaSearch,
@@ -6,12 +6,62 @@ import {
   FaShoppingCart,
   FaUser,
 } from "react-icons/fa";
-import { Link, NavLink } from "react-router"; // Corrected import from react-router-dom
-import logo from "/icons/logo.svg"; // Updated logo path as provided
+import { Link, NavLink, useNavigate } from "react-router";
+import { debounce } from "lodash";
+import logo from "/icons/logo.svg";
+import { useSearchQuery } from "../../redux/features/Products/ProductsSlice";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showResults, setShowResults] = useState(false);
+  const navigate = useNavigate();
+
+  // Debug: Log searchTerm
+  console.log("Search Term:", searchTerm, "Type:", typeof searchTerm);
+
+  // Use useSearchQuery hook to fetch search results
+  const {
+    data: searchResults,
+    isLoading,
+    isFetching,
+    error,
+  } = useSearchQuery(searchTerm, {
+    skip: !searchTerm, // Skip query if searchTerm is empty
+  });
+
+  // Debug: Log query status
+  console.log("Search Query Status:", {
+    isLoading,
+    isFetching,
+    error: error ? { message: error.message, status: error.status } : null,
+    searchResults,
+  });
+
+  // Debounced search handler
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      console.log("Debounced Search Triggered with Value:", value);
+      setSearchTerm(value);
+      setShowResults(!!value);
+    }, 300),
+    []
+  );
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    console.log("Input Change:", value);
+    debouncedSearch(value);
+  };
+
+  // Fallback: Test query without debounce for debugging
+  const handleSearchChangeImmediate = (e) => {
+    const value = e.target.value;
+    console.log("Immediate Search:", value);
+    setSearchTerm(value);
+    setShowResults(!!value);
+  };
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -19,6 +69,12 @@ const Navbar = () => {
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleResultClick = (id, slug) => {
+    setSearchTerm("");
+    setShowResults(false);
+    navigate("/free_samples", { state: { id: slug } });
   };
 
   return (
@@ -79,7 +135,7 @@ const Navbar = () => {
                 </svg>
               </button>
               {isDropdownOpen && (
-                <div className="absolute left-0 z-40 mt-2 w-48 bg-white shadow-lg rounded-md ">
+                <div className="absolute left-0 z-40 mt-2 w-48 bg-white shadow-lg rounded-md">
                   <NavLink
                     to="/products/fencing_list"
                     className={({ isActive }) =>
@@ -144,36 +200,105 @@ const Navbar = () => {
                 type="text"
                 placeholder="Search..."
                 className="border rounded-full py-1 px-3 text-[#3F4919] focus:outline-none focus:ring-2 focus:ring-[#94B316]"
+                onChange={handleSearchChange} // Use handleSearchChangeImmediate for debugging
+                onFocus={() => setShowResults(!!searchTerm)}
+                onBlur={() => setTimeout(() => setShowResults(false), 200)}
               />
               <FaSearch className="absolute right-3 top-2 text-[#3F4919]" />
+              {showResults && (
+                <div className="absolute z-50 mt-2 w-64 bg-white shadow-lg rounded-md max-h-80 overflow-y-auto">
+                  {isLoading || isFetching ? (
+                    <div className="px-4 py-2 text-[#3F4919]">Loading...</div>
+                  ) : error ? (
+                    <div className="px-4 py-2 text-[#3F4919]">
+                      Error: {error.message || "Failed to fetch results"}
+                    </div>
+                  ) : searchResults && searchResults.length > 0 ? (
+                    searchResults.map((result) => (
+                      <div
+                        key={result.id}
+                        className="flex items-center px-4 py-2 hover:bg-[#94B316] hover:text-white cursor-pointer"
+                        onClick={() =>
+                          handleResultClick(result.id, result.slug)
+                        }
+                      >
+                        <img
+                          src={result.image_url}
+                          alt={result.name}
+                          className="w-12 h-12 object-cover mr-3 rounded"
+                        />
+                        <span className="text-[#3F4919] hover:text-white">
+                          {result.name}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="px-4 py-2 text-[#3F4919]">
+                      No results found
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             <Link to="/cart">
               <FaShoppingCart
-                className="text-[#94B316] cursor-pointer" // Always active color
+                className="text-[#94B316] cursor-pointer"
                 size={20}
               />
             </Link>
             <Link to="/profile">
-              <FaUser
-                className="text-[#94B316] cursor-pointer" // Always active color
-                size={20}
-              />
+              <FaUser className="text-[#94B316] cursor-pointer" size={20} />
             </Link>
           </div>
 
           {/* Hamburger and Search for small screens */}
           <div className="flex md:hidden items-center space-x-4">
-            {/* Search Bar for small screens */}
             <div className="relative">
               <input
                 type="text"
                 placeholder="Search..."
                 className="border rounded-full py-1 px-3 text-[#3F4919] focus:outline-none focus:ring-2 focus:ring-[#94B316]"
+                onChange={handleSearchChange} // Use handleSearchChangeImmediate for debugging
+                onFocus={() => setShowResults(!!searchTerm)}
+                onBlur={() => setTimeout(() => setShowResults(false), 200)}
               />
               <FaSearch className="absolute right-3 top-2 text-[#3F4919]" />
+              {showResults && (
+                <div className="absolute z-50 mt-2 w-64 bg-white shadow-lg rounded-md max-h-80 overflow-y-auto">
+                  {isLoading || isFetching ? (
+                    <div className="px-4 py-2 text-[#3F4919]">Loading...</div>
+                  ) : error ? (
+                    <div className="px-4 py-2 text-[#3F4919]">
+                      Error: {error.message || "Failed to fetch results"}
+                    </div>
+                  ) : searchResults && searchResults.length > 0 ? (
+                    searchResults.map((result) => (
+                      <div
+                        key={result.id}
+                        className="flex items-center px-4 py-2 hover:bg-[#94B316] hover:text-white cursor-pointer"
+                        onClick={() =>
+                          handleResultClick(result.id, result.slug)
+                        }
+                      >
+                        <img
+                          src={result.image_url}
+                          alt={result.name}
+                          className="w-12 h-12 object-cover mr-3 rounded"
+                        />
+                        <span className="text-[#3F4919] hover:text-white">
+                          {result.name}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="px-4 py-2 text-[#3F4919]">
+                      No results found
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
-            {/* Hamburger Icon */}
             <button
               onClick={toggleMenu}
               className="text-[#3F4919] focus:outline-none hover:cursor-pointer"
@@ -184,7 +309,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Sidebar for small screens - Slide from right */}
+      {/* Sidebar for small screens */}
       <div
         className={`fixed inset-0 bg-[#3f49196c] backdrop-blur-xs z-50 transition-opacity md:hidden ${
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -204,11 +329,9 @@ const Navbar = () => {
             >
               <FaTimes size={24} />
             </button>
-            {/* Logo in Sidebar */}
             <div className="mb-8 flex justify-center">
               <img src={logo} alt="Logo" className="w-28" />
             </div>
-            {/* Links in Sidebar */}
             <div className="flex flex-col space-y-4">
               <NavLink
                 to="/"
@@ -233,7 +356,6 @@ const Navbar = () => {
                 About Us
               </NavLink>
 
-              {/* Products Dropdown in Sidebar */}
               <div className="relative">
                 <button
                   onClick={toggleDropdown}
@@ -260,7 +382,7 @@ const Navbar = () => {
                   </svg>
                 </button>
                 {isDropdownOpen && (
-                  <div className="absolute left-0 z-40 mt-2 w-48 bg-white shadow-lg rounded-md ">
+                  <div className="absolute left-0 z-40 mt-2 w-48 bg-white shadow-lg rounded-md">
                     <NavLink
                       to="/products/fencing_list"
                       className={({ isActive }) =>
@@ -314,16 +436,14 @@ const Navbar = () => {
           <div className="flex justify-between px-10 items-center space-x-4 mt-8 py-4 border-t border-[#3F4919]">
             <Link to="/cart">
               <FaShoppingCart
-                className="text-[#94B316] cursor-pointer" // Always active color
+                className="text-[#94B316] cursor-pointer"
                 size={30}
               />
             </Link>
-            <div className="h-6 w-[1px] bg-[#3F4919]" />{" "}
-            {/* Vertical divider */}
-            <FaUser
-              className="text-[#94B316] cursor-pointer" // Always active color
-              size={30}
-            />
+            <div className="h-6 w-[1px] bg-[#3F4919]" />
+            <Link to="/profile">
+              <FaUser className="text-[#94B316] cursor-pointer" size={30} />
+            </Link>
           </div>
         </div>
       </div>

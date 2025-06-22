@@ -47,6 +47,9 @@ export const productApi = createApi({
     getReviews: builder.query({
       query: () => "api/reviews/paid-orders/",
     }),
+    search: builder.query({
+      query: (slag) => `search/?q=${slag}`,
+    }),
   }),
 });
 
@@ -60,4 +63,5 @@ export const {
   useGetGalleryQuery,
   useGetFaqQuery,
   useGetReviewsQuery,
+  useSearchQuery,
 } = productApi;
