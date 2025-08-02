@@ -111,25 +111,36 @@ export default function VerifyMail() {
       if (isFromSignup) {
         // Use verifyOtp for signup flow
         const response = await verifyOtp({
-          email,
+          email, // Use the email from location.state
           otp: fullCode,
         }).unwrap();
+
+        // Log response to verify structure
+        console.log("API Response:", response);
 
         // Extract the required data
         const {
           access: access_token,
           refresh: refresh_token,
-          profile_data: { user: email },
+          profile_data,
         } = response;
+
+        // Verify profile_data and user field exist
+        if (!profile_data || !profile_data.user) {
+          throw new Error("Invalid response structure: user email not found");
+        }
+
+        // Use a different variable to avoid shadowing 'email'
+        const userEmail = profile_data.user;
 
         // Store in local storage
         localStorage.setItem("access_token", access_token);
         localStorage.setItem("refresh_token", refresh_token);
-        localStorage.setItem("email", email);
+        localStorage.setItem("email", userEmail);
       } else {
         // Use resetPasswordOtp for password reset flow
         await resetPasswordOtp({
-          email,
+          email, // Use the email from location.state
           otp: fullCode,
         }).unwrap();
       }
@@ -137,6 +148,7 @@ export default function VerifyMail() {
       toast("OTP verified successfully!", { icon: "✅" });
       navigate(redirectUrl, { state: { email } });
     } catch (err) {
+      console.error("Error:", err);
       const errorMsg = err?.data?.message || "Invalid OTP. Please try again.";
       setErrorMessage(errorMsg);
       toast(errorMsg, { icon: "❌" });
@@ -214,11 +226,10 @@ export default function VerifyMail() {
         <button
           type="submit"
           disabled={isVerifying || code.join("").length !== 4}
-          className={`w-full py-2 mt-2 bg-[#94B316] text-white font-semibold rounded-full hover:bg-[#94b316e7] transition ${
-            isVerifying || code.join("").length !== 4
-              ? "opacity-50 cursor-not-allowed"
-              : ""
-          }`}
+          className={`w-full py-2 mt-2 bg-[#94B316] text-white font-semibold rounded-full hover:bg-[#94b316e7] transition ${isVerifying || code.join("").length !== 4
+            ? "opacity-50 cursor-not-allowed"
+            : ""
+            }`}
         >
           {isVerifying ? "Verifying..." : "Confirm"}
         </button>
@@ -230,9 +241,8 @@ export default function VerifyMail() {
               type="button"
               onClick={handleResend}
               disabled={isResending}
-              className={`underline text-[#94B316] hover:text-[#6f8f0f] transition ${
-                isResending ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className={`underline text-[#94B316] hover:text-[#6f8f0f] transition ${isResending ? "opacity-50 cursor-not-allowed" : ""
+                }`}
             >
               {isResending ? "Resending..." : "request another code"}
             </button>

@@ -32,10 +32,11 @@ export default function Landing() {
         description="Enjoy the perfect balance of beauty, durability, and low maintenance with our premium composite decking solutions. Crafted to withstand the harshest weather while maintaining a rich"
         primaryButtonText="Shop Now"
         secondaryButtonText="Order Free Sample"
-        primaryButtonAction={() => {}}
-        secondaryButtonAction={() => {}}
+        primaryButtonAction={() => { }}
+        secondaryButtonAction={() => { }}
         primaryButtonIcon={<FaShoppingCart className="mr-2" />}
         secondaryButtonIcon={<FaEnvelope className="mr-2" />}
+
       />
       <WhyUs />
       <ProductsSlider />

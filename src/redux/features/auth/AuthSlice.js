@@ -1,7 +1,7 @@
 // features/auth/authApi.js
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const BASE_URL = "https://endlessly-unified-guppy.ngrok-free.app";
+const BASE_URL = "https://backend.horizoncomposite.com";
 
 export const authApi = createApi({
   reducerPath: "authApi",

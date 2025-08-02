@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const profileApi = createApi({
   reducerPath: "profileApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://endlessly-unified-guppy.ngrok-free.app", // replace with your actual base URL
+    baseUrl: "https://backend.horizoncomposite.com", // replace with your actual base URL
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("access_token");
       if (token) {

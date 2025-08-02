@@ -11,8 +11,8 @@ const ReHero = ({
   description = "",
   primaryButtonText = "",
   secondaryButtonText = "",
-  primaryButtonAction = () => {},
-  secondaryButtonAction = () => {},
+  primaryButtonAction = () => { },
+  secondaryButtonAction = () => { },
   primaryButtonIcon = "",
   secondaryButtonIcon = "",
 }) => {
@@ -22,7 +22,7 @@ const ReHero = ({
       {" "}
       <div className="relative">
         <div
-          className="relative w-full h-[60vh] min-h-[400px] max-h-[600px] bg-cover bg-center interFont flex items-center justify-center"
+          className="relative w-full h-[calc(100vh-110px)] min-h-[400px] bg-cover bg-center interFont flex items-center justify-center"
           style={{ backgroundImage: `url(${backgroundImage})` }}
         >
           {/* Dark overlay */}
