@@ -61,7 +61,7 @@ export default function DesignIdea() {
           <div className="mb-4">
             <VideoPlayer
               videoSrc={
-                "https://res.cloudinary.com/ds97wytcs/" + gallery[0].video
+                "https://res.cloudinary.com/dze2kofvs/" + gallery[0].video
               }
               autoPlay={true}
               loop={true}
@@ -80,7 +80,7 @@ export default function DesignIdea() {
                 className="aspect-square overflow-hidden rounded-lg"
               >
                 <img
-                  src={"https://res.cloudinary.com/ds97wytcs/" + img.image_file}
+                  src={"https://res.cloudinary.com/dze2kofvs/" + img.image_file}
                   alt={`Gallery image ${index + 1}`}
                   className="w-full h-full object-cover"
                 />

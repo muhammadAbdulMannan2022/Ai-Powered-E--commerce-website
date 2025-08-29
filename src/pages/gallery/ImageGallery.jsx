@@ -36,7 +36,7 @@ export default function ImageGallery({ projects }) {
     if (!activeProject) return;
     setCurrentIndex(
       (currentIndex - 1 + activeProject.images.length) %
-        activeProject.images.length
+      activeProject.images.length
     );
   };
 
@@ -57,7 +57,7 @@ export default function ImageGallery({ projects }) {
               {previewImages.map((img, index) => (
                 <img
                   key={img.id} // Use img.id instead of index for unique keys
-                  src={"https://res.cloudinary.com/ds97wytcs/" + img.image_file} // Access image_file
+                  src={"https://res.cloudinary.com/dze2kofvs/" + img.image_file} // Access image_file
                   onClick={() => openModal(project, index)}
                   className="w-full mb-4 cursor-pointer rounded-lg hover:opacity-90 transition-all duration-200 break-inside-avoid"
                   alt={`Project ${i} image ${index}`}
@@ -72,7 +72,7 @@ export default function ImageGallery({ projects }) {
                 >
                   <img
                     src={
-                      "https://res.cloudinary.com/ds97wytcs/" +
+                      "https://res.cloudinary.com/dze2kofvs/" +
                       project.images[7].image_file
                     } // Access image_file
                     alt="more images"
@@ -94,9 +94,8 @@ export default function ImageGallery({ projects }) {
         isOpen={isOpen}
         onRequestClose={closeModal}
         contentLabel="Image Modal"
-        className={`${
-          isOpen ? "fixed" : "hidden"
-        } inset-0 bg-black bg-opacity-95 flex items-center justify-center z-50 `}
+        className={`${isOpen ? "fixed" : "hidden"
+          } inset-0 bg-black bg-opacity-95 flex items-center justify-center z-50 `}
       >
         <div className="w-full h-full bg-black flex items-center justify-center">
           {activeProject && (
@@ -121,7 +120,7 @@ export default function ImageGallery({ projects }) {
               </button>
               <img
                 src={
-                  "https://res.cloudinary.com/ds97wytcs/" +
+                  "https://res.cloudinary.com/dze2kofvs/" +
                   activeProject.images[currentIndex].image_file
                 } // Access image_file
                 alt={`Slide ${currentIndex}`}

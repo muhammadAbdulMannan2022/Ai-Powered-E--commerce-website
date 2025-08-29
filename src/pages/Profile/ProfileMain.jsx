@@ -239,7 +239,7 @@ export default function ProfilePage() {
             <div className="relative group">
               <img
                 src={
-                  "https://res.cloudinary.com/ds97wytcs/" + previewImage ||
+                  "https://res.cloudinary.com/dze2kofvs/" + previewImage ||
                   "/profile.png"
                 }
                 alt="Profile"

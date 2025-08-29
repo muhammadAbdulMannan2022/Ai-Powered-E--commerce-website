@@ -21,7 +21,7 @@ export default function VideoGallery({ projects }) {
             {project.category}
           </h1>
           <VideoPlayer
-            videoSrc={"https://res.cloudinary.com/ds97wytcs/" + project.video}
+            videoSrc={"https://res.cloudinary.com/dze2kofvs/" + project.video}
             onLoadStart={() => handleLoadStart(index)}
             onLoadedData={() => handleLoadedData(index)}
             loop={false}

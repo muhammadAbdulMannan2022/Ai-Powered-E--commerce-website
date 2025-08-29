@@ -34,7 +34,7 @@ const rawData = {
       image:
         "image/upload/v1750250767/wood_type_color_images/oojb9voag2ud7edh7xoq.png",
       image_url:
-        "http://res.cloudinary.com/ds97wytcs/image/upload/v1750250767/wood_type_color_images/oojb9voag2ud7edh7xoq.png",
+        "http://res.cloudinary.com/dze2kofvs/image/upload/v1750250767/wood_type_color_images/oojb9voag2ud7edh7xoq.png",
       order: 1,
     },
     {
@@ -48,7 +48,7 @@ const rawData = {
       image:
         "image/upload/v1750250768/wood_type_color_images/jqtjjyvvnc6ucwozrei1.png",
       image_url:
-        "http://res.cloudinary.com/ds97wytcs/image/upload/v1750250768/wood_type_color_images/jqtjjyvvnc6ucwozrei1.png",
+        "http://res.cloudinary.com/dze2kofvs/image/upload/v1750250768/wood_type_color_images/jqtjjyvvnc6ucwozrei1.png",
       order: 2,
     },
     {
@@ -62,7 +62,7 @@ const rawData = {
       image:
         "image/upload/v1750250769/wood_type_color_images/jfxrqxgchdnqin9laomo.png",
       image_url:
-        "http://res.cloudinary.com/ds97wytcs/image/upload/v1750250769/wood_type_color_images/jfxrqxgchdnqin9laomo.png",
+        "http://res.cloudinary.com/dze2kofvs/image/upload/v1750250769/wood_type_color_images/jfxrqxgchdnqin9laomo.png",
       order: 3,
     },
   ],
