@@ -4,3 +4,17 @@
 .interFont {
   font-family: "Inter", sans-serif;
 }
+
+.goog-te-banner-frame.skiptranslate,
+.goog-te-gadget,
+.goog-te-banner {
+  display: none !important;
+}
+
+body {
+  top: 0px !important;
+}
+
+.skiptranslate {
+  display: none;
+}
